@@ -218,6 +218,13 @@
                 <version>${carenest.version}</version>
             </dependency>
 
+            <!--护理平台模块-->
+            <dependency>
+                <groupId>com.carenest</groupId>
+                <artifactId>carenest-nursing-platform</artifactId>
+                <version>${carenest.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -228,6 +235,7 @@
         <module>carenest-quartz</module>
         <module>carenest-generator</module>
         <module>carenest-common</module>
+        <module>carenest-nursing-platform</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -61,6 +61,12 @@
             <artifactId>carenest-generator</artifactId>
         </dependency>
 
+        <!-- 护理平台 -->
+        <dependency>
+            <groupId>com.carenest</groupId>
+            <artifactId>carenest-nursing-platform</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
