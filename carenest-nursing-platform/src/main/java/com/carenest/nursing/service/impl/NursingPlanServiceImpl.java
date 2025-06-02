@@ -1,5 +1,6 @@
 package com.carenest.nursing.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.carenest.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +8,16 @@ import org.springframework.stereotype.Service;
 import com.carenest.nursing.mapper.NursingPlanMapper;
 import com.carenest.nursing.domain.NursingPlan;
 import com.carenest.nursing.service.INursingPlanService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * 护理计划Service业务层处理
  * 
  * @author alexis
- * @date 2025-05-22
+ * @date 2025-06-02
  */
 @Service
-public class NursingPlanServiceImpl implements INursingPlanService 
+public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, NursingPlan> implements INursingPlanService
 {
     @Autowired
     private NursingPlanMapper nursingPlanMapper;
@@ -29,7 +31,7 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public NursingPlan selectNursingPlanById(Long id)
     {
-        return nursingPlanMapper.selectNursingPlanById(id);
+        return getById(id);
     }
 
     /**
@@ -53,8 +55,7 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public int insertNursingPlan(NursingPlan nursingPlan)
     {
-        nursingPlan.setCreateTime(DateUtils.getNowDate());
-        return nursingPlanMapper.insertNursingPlan(nursingPlan);
+        return save(nursingPlan) ? 1 : 0;
     }
 
     /**
@@ -66,8 +67,7 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public int updateNursingPlan(NursingPlan nursingPlan)
     {
-        nursingPlan.setUpdateTime(DateUtils.getNowDate());
-        return nursingPlanMapper.updateNursingPlan(nursingPlan);
+        return updateById(nursingPlan) ? 1 : 0;
     }
 
     /**
@@ -79,7 +79,7 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public int deleteNursingPlanByIds(Long[] ids)
     {
-        return nursingPlanMapper.deleteNursingPlanByIds(ids);
+        return removeByIds(Arrays.asList(ids)) ? 1 : 0;
     }
 
     /**
@@ -91,6 +91,6 @@ public class NursingPlanServiceImpl implements INursingPlanService
     @Override
     public int deleteNursingPlanById(Long id)
     {
-        return nursingPlanMapper.deleteNursingPlanById(id);
+        return removeById(id) ? 1 : 0;
     }
 }

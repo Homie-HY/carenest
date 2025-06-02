@@ -1,16 +1,16 @@
 package com.carenest.nursing.service;
 
-import com.carenest.nursing.domain.NursingProject;
-
 import java.util.List;
+import com.carenest.nursing.domain.NursingProject;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 护理项目Service接口
  * 
  * @author alexis
- * @date 2025-05-20
+ * @date 2025-06-02
  */
-public interface INursingProjectService 
+public interface INursingProjectService extends IService<NursingProject>
 {
     /**
      * 查询护理项目

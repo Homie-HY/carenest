@@ -2,14 +2,15 @@ package com.carenest.nursing.service;
 
 import java.util.List;
 import com.carenest.nursing.domain.NursingPlan;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 护理计划Service接口
  * 
  * @author alexis
- * @date 2025-05-22
+ * @date 2025-06-02
  */
-public interface INursingPlanService 
+public interface INursingPlanService extends IService<NursingPlan>
 {
     /**
      * 查询护理计划

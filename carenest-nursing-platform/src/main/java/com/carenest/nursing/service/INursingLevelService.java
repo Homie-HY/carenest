@@ -2,14 +2,15 @@ package com.carenest.nursing.service;
 
 import java.util.List;
 import com.carenest.nursing.domain.NursingLevel;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * 护理等级Service接口
  * 
  * @author alexis
- * @date 2025-05-22
+ * @date 2025-06-02
  */
-public interface INursingLevelService 
+public interface INursingLevelService extends IService<NursingLevel>
 {
     /**
      * 查询护理等级

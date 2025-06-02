@@ -2,14 +2,17 @@ package com.carenest.nursing.mapper;
 
 import java.util.List;
 import com.carenest.nursing.domain.NursingLevel;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 护理等级Mapper接口
  * 
  * @author alexis
- * @date 2025-05-22
+ * @date 2025-06-02
  */
-public interface NursingLevelMapper 
+@Mapper
+public interface NursingLevelMapper extends BaseMapper<NursingLevel>
 {
     /**
      * 查询护理等级

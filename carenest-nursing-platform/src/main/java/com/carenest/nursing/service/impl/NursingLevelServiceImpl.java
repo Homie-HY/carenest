@@ -1,5 +1,6 @@
 package com.carenest.nursing.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.carenest.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +8,16 @@ import org.springframework.stereotype.Service;
 import com.carenest.nursing.mapper.NursingLevelMapper;
 import com.carenest.nursing.domain.NursingLevel;
 import com.carenest.nursing.service.INursingLevelService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * 护理等级Service业务层处理
  * 
  * @author alexis
- * @date 2025-05-22
+ * @date 2025-06-02
  */
 @Service
-public class NursingLevelServiceImpl implements INursingLevelService 
+public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, NursingLevel> implements INursingLevelService
 {
     @Autowired
     private NursingLevelMapper nursingLevelMapper;
@@ -29,7 +31,7 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public NursingLevel selectNursingLevelById(Long id)
     {
-        return nursingLevelMapper.selectNursingLevelById(id);
+        return getById(id);
     }
 
     /**
@@ -53,8 +55,7 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int insertNursingLevel(NursingLevel nursingLevel)
     {
-        nursingLevel.setCreateTime(DateUtils.getNowDate());
-        return nursingLevelMapper.insertNursingLevel(nursingLevel);
+        return save(nursingLevel) ? 1 : 0;
     }
 
     /**
@@ -66,8 +67,7 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int updateNursingLevel(NursingLevel nursingLevel)
     {
-        nursingLevel.setUpdateTime(DateUtils.getNowDate());
-        return nursingLevelMapper.updateNursingLevel(nursingLevel);
+        return updateById(nursingLevel) ? 1 : 0;
     }
 
     /**
@@ -79,7 +79,7 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int deleteNursingLevelByIds(Long[] ids)
     {
-        return nursingLevelMapper.deleteNursingLevelByIds(ids);
+        return removeByIds(Arrays.asList(ids)) ? 1 : 0;
     }
 
     /**
@@ -91,6 +91,6 @@ public class NursingLevelServiceImpl implements INursingLevelService
     @Override
     public int deleteNursingLevelById(Long id)
     {
-        return nursingLevelMapper.deleteNursingLevelById(id);
+        return removeById(id) ? 1 : 0;
     }
 }

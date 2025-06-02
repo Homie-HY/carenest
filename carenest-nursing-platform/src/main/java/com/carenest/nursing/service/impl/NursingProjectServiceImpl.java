@@ -1,22 +1,23 @@
 package com.carenest.nursing.service.impl;
 
+import java.util.Arrays;
+import java.util.List;
 import com.carenest.common.utils.DateUtils;
-import com.carenest.nursing.domain.NursingProject;
-import com.carenest.nursing.mapper.NursingProjectMapper;
-import com.carenest.nursing.service.INursingProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.carenest.nursing.mapper.NursingProjectMapper;
+import com.carenest.nursing.domain.NursingProject;
+import com.carenest.nursing.service.INursingProjectService;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * 护理项目Service业务层处理
  * 
  * @author alexis
- * @date 2025-05-20
+ * @date 2025-06-02
  */
 @Service
-public class NursingProjectServiceImpl implements INursingProjectService 
+public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper, NursingProject> implements INursingProjectService
 {
     @Autowired
     private NursingProjectMapper nursingProjectMapper;
@@ -30,7 +31,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
     @Override
     public NursingProject selectNursingProjectById(Long id)
     {
-        return nursingProjectMapper.selectNursingProjectById(id);
+        return getById(id);
     }
 
     /**
@@ -54,8 +55,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
     @Override
     public int insertNursingProject(NursingProject nursingProject)
     {
-        nursingProject.setCreateTime(DateUtils.getNowDate());
-        return nursingProjectMapper.insertNursingProject(nursingProject);
+        return save(nursingProject) ? 1 : 0;
     }
 
     /**
@@ -67,8 +67,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
     @Override
     public int updateNursingProject(NursingProject nursingProject)
     {
-        nursingProject.setUpdateTime(DateUtils.getNowDate());
-        return nursingProjectMapper.updateNursingProject(nursingProject);
+        return updateById(nursingProject) ? 1 : 0;
     }
 
     /**
@@ -80,7 +79,7 @@ public class NursingProjectServiceImpl implements INursingProjectService
     @Override
     public int deleteNursingProjectByIds(Long[] ids)
     {
-        return nursingProjectMapper.deleteNursingProjectByIds(ids);
+        return removeByIds(Arrays.asList(ids)) ? 1 : 0;
     }
 
     /**
@@ -92,6 +91,6 @@ public class NursingProjectServiceImpl implements INursingProjectService
     @Override
     public int deleteNursingProjectById(Long id)
     {
-        return nursingProjectMapper.deleteNursingProjectById(id);
+        return removeById(id) ? 1 : 0;
     }
 }

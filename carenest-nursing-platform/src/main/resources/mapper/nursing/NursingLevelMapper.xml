@@ -27,6 +27,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
             <if test="planId != null "> and plan_id = #{planId}</if>
+            <if test="fee != null "> and fee = #{fee}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
         </where>
     </select>
     
@@ -42,7 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planId != null">plan_id,</if>
             <if test="fee != null">fee,</if>
             <if test="status != null">status,</if>
-            <if test="description != null and description != ''">description,</if>
+            <if test="description != null">description,</if>
             <if test="remark != null">remark,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateTime != null">update_time,</if>
@@ -54,7 +57,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planId != null">#{planId},</if>
             <if test="fee != null">#{fee},</if>
             <if test="status != null">#{status},</if>
-            <if test="description != null and description != ''">#{description},</if>
+            <if test="description != null">#{description},</if>
             <if test="remark != null">#{remark},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateTime != null">#{updateTime},</if>
@@ -70,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="planId != null">plan_id = #{planId},</if>
             <if test="fee != null">fee = #{fee},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="description != null and description != ''">description = #{description},</if>
+            <if test="description != null">description = #{description},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>

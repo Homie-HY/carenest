@@ -1,16 +1,18 @@
 package com.carenest.nursing.mapper;
 
-import com.carenest.nursing.domain.NursingProject;
-
 import java.util.List;
+import com.carenest.nursing.domain.NursingProject;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 护理项目Mapper接口
  * 
  * @author alexis
- * @date 2025-05-20
+ * @date 2025-06-02
  */
-public interface NursingProjectMapper 
+@Mapper
+public interface NursingProjectMapper extends BaseMapper<NursingProject>
 {
     /**
      * 查询护理项目
