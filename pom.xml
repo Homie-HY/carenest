@@ -37,6 +37,7 @@
         <spring-framework.version>5.3.39</spring-framework.version>
         <lombok.version>1.18.22</lombok.version>
         <mybatis-plus-spring-boot.version>3.5.2</mybatis-plus-spring-boot.version>
+        <aliyun.sdk.oss>3.17.4</aliyun.sdk.oss>
     </properties>
 
     <!-- 依赖声明 -->
@@ -227,6 +228,13 @@
                 <version>${carenest.version}</version>
             </dependency>
 
+            <!--OSS模块-->
+            <dependency>
+                <groupId>com.carenest</groupId>
+                <artifactId>carenest-oss</artifactId>
+                <version>${carenest.version}</version>
+            </dependency>
+
             <!--Lombok-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -246,6 +254,12 @@
                 <version>${mybatis-plus-spring-boot.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun.sdk.oss}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -257,6 +271,7 @@
         <module>carenest-generator</module>
         <module>carenest-common</module>
         <module>carenest-nursing-platform</module>
+        <module>carenest-oss</module>
     </modules>
     <packaging>pom</packaging>
 

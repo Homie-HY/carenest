@@ -67,6 +67,12 @@
             <artifactId>carenest-nursing-platform</artifactId>
         </dependency>
 
+        <!--阿里云OSS-->
+        <dependency>
+            <groupId>com.carenest</groupId>
+            <artifactId>carenest-oss</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
