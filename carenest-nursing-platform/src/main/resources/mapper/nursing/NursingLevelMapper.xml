@@ -38,6 +38,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where id = #{id}
     </select>
 
+    <select id="selectNursingLevelVoList" resultType="com.carenest.nursing.vo.NursingLevelVo">
+        select nl.id, name, plan_id, fee, nl.status, description, nl.create_time, nl.create_by, nl.update_by, nl.update_time, np.plan_name planName
+        from nursing_level nl
+        join nursing_plan np on nl.plan_id = np.id
+        <where>
+            <if test="name != null  and name != ''"> and nl.name like concat('%', #{name}, '%')</if>
+            <if test="status != null"> and nl.status = #{status}</if>
+        </where>
+    </select>
+
     <insert id="insertNursingLevel" parameterType="NursingLevel" useGeneratedKeys="true" keyProperty="id">
         insert into nursing_level
         <trim prefix="(" suffix=")" suffixOverrides=",">

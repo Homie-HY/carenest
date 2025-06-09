@@ -2,6 +2,8 @@ package com.carenest.nursing.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.carenest.common.utils.DateUtils;
 import com.carenest.common.utils.bean.BeanUtils;
 import com.carenest.nursing.domain.NursingProjectPlan;
@@ -142,5 +144,17 @@ public class NursingPlanServiceImpl extends ServiceImpl<NursingPlanMapper, Nursi
         nursingProjectPlanMapper.deleteByNursingPlanId(id);
         // 删除护理计划
         return removeById(id) ? 1 : 0;
+    }
+
+    /**
+     * 查询所有护理计划
+     *
+     * @return 护理计划列表
+     */
+    @Override
+    public List<NursingPlan> getAllNursingPlans() {
+        LambdaQueryWrapper<NursingPlan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(NursingPlan::getStatus, 1);
+        return list(queryWrapper);
     }
 }

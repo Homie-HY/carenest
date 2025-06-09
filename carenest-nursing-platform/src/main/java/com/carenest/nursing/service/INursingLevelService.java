@@ -3,6 +3,7 @@ package com.carenest.nursing.service;
 import java.util.List;
 import com.carenest.nursing.domain.NursingLevel;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.carenest.nursing.vo.NursingLevelVo;
 
 /**
  * 护理等级Service接口
@@ -59,4 +60,11 @@ public interface INursingLevelService extends IService<NursingLevel>
      * @return 结果
      */
     public int deleteNursingLevelById(Long id);
+
+    /**
+     * 查询护理等级Vo列表
+     * @param nursingLevel  条件
+     * @return  结果
+     */
+    List<NursingLevelVo> selectNursingLevelVoList(NursingLevel nursingLevel);
 }

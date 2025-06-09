@@ -3,6 +3,7 @@ package com.carenest.nursing.service.impl;
 import java.util.Arrays;
 import java.util.List;
 import com.carenest.common.utils.DateUtils;
+import com.carenest.nursing.vo.NursingLevelVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.carenest.nursing.mapper.NursingLevelMapper;
@@ -92,5 +93,16 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     public int deleteNursingLevelById(Long id)
     {
         return removeById(id) ? 1 : 0;
+    }
+
+    /**
+     * 查询护理等级Vo列表
+     *
+     * @param nursingLevel 条件
+     * @return 结果
+     */
+    @Override
+    public List<NursingLevelVo> selectNursingLevelVoList(NursingLevel nursingLevel) {
+        return nursingLevelMapper.selectNursingLevelVoList(nursingLevel);
     }
 }

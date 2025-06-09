@@ -3,6 +3,7 @@ package com.carenest.nursing.mapper;
 import java.util.List;
 import com.carenest.nursing.domain.NursingLevel;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.carenest.nursing.vo.NursingLevelVo;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -61,4 +62,11 @@ public interface NursingLevelMapper extends BaseMapper<NursingLevel>
      * @return 结果
      */
     public int deleteNursingLevelByIds(Long[] ids);
+
+    /**
+     * 查询护理等级Vo列表
+     * @param nursingLevel  参数
+     * @return  结果
+     */
+    List<NursingLevelVo> selectNursingLevelVoList(NursingLevel nursingLevel);
 }
