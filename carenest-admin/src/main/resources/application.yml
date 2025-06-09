@@ -137,3 +137,6 @@ aliyun:
   oss:
     endpoint: https://oss-cn-beijing.aliyuncs.com
     bucketName: carenest
+
+dept:
+  nursingId: 201
