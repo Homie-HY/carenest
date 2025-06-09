@@ -4,6 +4,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.carenest.common.core.domain.R;
+import com.carenest.nursing.vo.NursingProjectVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -112,5 +113,11 @@ public class NursingProjectController extends BaseController
     public AjaxResult remove(@PathVariable @ApiParam("要删除的护理项目ID") Long[] ids)
     {
         return toAjax(nursingProjectService.deleteNursingProjectByIds(ids));
+    }
+
+    @GetMapping("/all")
+    public AjaxResult getAll() {
+        List<NursingProjectVo> list = nursingProjectService.getAll();
+        return AjaxResult.success(list);
     }
 }

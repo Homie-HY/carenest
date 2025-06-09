@@ -3,6 +3,7 @@ package com.carenest.nursing.service.impl;
 import java.util.Arrays;
 import java.util.List;
 import com.carenest.common.utils.DateUtils;
+import com.carenest.nursing.vo.NursingProjectVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.carenest.nursing.mapper.NursingProjectMapper;
@@ -92,5 +93,15 @@ public class NursingProjectServiceImpl extends ServiceImpl<NursingProjectMapper,
     public int deleteNursingProjectById(Long id)
     {
         return removeById(id) ? 1 : 0;
+    }
+
+    /**
+     * 查询所有护理项目
+     *
+     * @return 护理项目列表
+     */
+    @Override
+    public List<NursingProjectVo> getAll() {
+        return nursingProjectMapper.getAll();
     }
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import com.carenest.common.core.domain.R;
+import com.carenest.nursing.dto.NursingPlanDto;
+import com.carenest.nursing.vo.NursingPlanVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -73,7 +75,7 @@ public class NursingPlanController extends BaseController
     @ApiOperation("获取护理计划详细信息")
     @PreAuthorize("@ss.hasPermi('nursing:plan:query')")
     @GetMapping(value = "/{id}")
-    public R<NursingPlan> getInfo(@PathVariable("id") @ApiParam("护理计划ID") Long id)
+    public R<NursingPlanVo> getInfo(@PathVariable("id") @ApiParam("护理计划ID") Long id)
     {
         return R.ok(nursingPlanService.selectNursingPlanById(id));
     }
@@ -85,9 +87,9 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:plan:add')")
     @Log(title = "护理计划", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody @ApiParam("新增的护理计划对象") NursingPlan nursingPlan)
+    public AjaxResult add(@RequestBody @ApiParam("新增的护理计划对象") NursingPlanDto dto)
     {
-        return toAjax(nursingPlanService.insertNursingPlan(nursingPlan));
+        return toAjax(nursingPlanService.insertNursingPlan(dto));
     }
 
     /**
@@ -97,9 +99,9 @@ public class NursingPlanController extends BaseController
     @PreAuthorize("@ss.hasPermi('nursing:plan:edit')")
     @Log(title = "护理计划", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody @ApiParam("修改的护理计划对象") NursingPlan nursingPlan)
+    public AjaxResult edit(@RequestBody @ApiParam("修改的护理计划对象") NursingPlanDto dto)
     {
-        return toAjax(nursingPlanService.updateNursingPlan(nursingPlan));
+        return toAjax(nursingPlanService.updateNursingPlan(dto));
     }
 
     /**
@@ -108,9 +110,9 @@ public class NursingPlanController extends BaseController
     @ApiOperation("删除护理计划")
     @PreAuthorize("@ss.hasPermi('nursing:plan:remove')")
     @Log(title = "护理计划", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable @ApiParam("要删除的护理计划ID") Long[] ids)
+	@DeleteMapping("/{id}")
+    public AjaxResult remove(@PathVariable @ApiParam("要删除的护理计划ID") Long id)
     {
-        return toAjax(nursingPlanService.deleteNursingPlanByIds(ids));
+        return toAjax(nursingPlanService.deleteNursingPlanById(id));
     }
 }
