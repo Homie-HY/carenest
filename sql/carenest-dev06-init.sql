@@ -18,6 +18,9 @@
 --
 -- Table structure for table `bed`
 --
+DROP DATABASE IF EXISTS `carenest`;
+CREATE DATABASE IF NOT EXISTS `carenest`;
+use `carenest`;
 
 DROP TABLE IF EXISTS `bed`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
