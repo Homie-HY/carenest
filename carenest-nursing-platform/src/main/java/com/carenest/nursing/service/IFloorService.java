@@ -2,6 +2,7 @@ package com.carenest.nursing.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.carenest.nursing.domain.Floor;
+import com.carenest.nursing.vo.TreeVo;
 
 import java.util.List;
 
@@ -58,4 +59,11 @@ public interface IFloorService extends IService<Floor>
      * @return
      */
     List<Floor> selectAllByNur();
+
+    /**
+     * 根据床位状态查询房间和床位
+     * @param status 0:空闲 1:使用中 2:待清理
+     * @return
+     */
+    List<TreeVo> getRoomAndBedByBedStatus(Integer status);
 }

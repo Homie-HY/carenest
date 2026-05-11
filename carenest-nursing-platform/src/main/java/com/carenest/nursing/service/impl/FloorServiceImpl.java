@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.carenest.nursing.domain.Floor;
 import com.carenest.nursing.mapper.FloorMapper;
 import com.carenest.nursing.service.IFloorService;
+import com.carenest.nursing.vo.TreeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -90,4 +91,8 @@ public class FloorServiceImpl extends ServiceImpl<FloorMapper, Floor> implements
         return floorMapper.selectAllByNur();
     }
 
+    @Override
+    public List<TreeVo> getRoomAndBedByBedStatus(Integer status) {
+        return floorMapper.getRoomAndBedByBedStatus(status);
+    }
 }

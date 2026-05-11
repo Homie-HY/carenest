@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.carenest.nursing.domain.Room;
 import com.carenest.nursing.vo.RoomVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -67,4 +68,11 @@ public interface RoomMapper extends BaseMapper<Room>
     List<RoomVo> selectByFloorId(Long floorId);
 
     List<RoomVo> selectByFloorIdWithNur(Long floorId);
+
+    /**
+     * 根据房间 id 根据房间id查询房间数据(楼层、房间、价格)
+     * @param id
+     * @return
+     */
+    RoomVo getRoomById(@Param("id") Long id);
 }

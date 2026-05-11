@@ -2,6 +2,8 @@ package com.carenest.nursing.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.carenest.common.utils.DateUtils;
 import com.carenest.nursing.vo.NursingLevelVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,5 +106,17 @@ public class NursingLevelServiceImpl extends ServiceImpl<NursingLevelMapper, Nur
     @Override
     public List<NursingLevelVo> selectNursingLevelVoList(NursingLevel nursingLevel) {
         return nursingLevelMapper.selectNursingLevelVoList(nursingLevel);
+    }
+
+    /**
+     * 查询所有护理等级
+     *
+     * @return 列表
+     */
+    @Override
+    public List<NursingLevel> listAll() {
+        LambdaQueryWrapper<NursingLevel> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(NursingLevel::getStatus, 1);
+        return list(queryWrapper);
     }
 }

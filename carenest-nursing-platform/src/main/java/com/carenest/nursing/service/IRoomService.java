@@ -67,4 +67,11 @@ public interface IRoomService extends IService<Room>
      * @return
      */
     List<RoomVo> getRoomsWithNurByFloorId(Long floorId);
+
+    /**
+     * 根据房间 id 根据房间id查询房间数据(楼层、房间、价格)
+     * @param id
+     * @return
+     */
+    RoomVo getRoomById(Long id);
 }

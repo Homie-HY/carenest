@@ -114,4 +114,11 @@ public class NursingLevelController extends BaseController
     {
         return toAjax(nursingLevelService.deleteNursingLevelByIds(ids));
     }
+
+    @GetMapping("/all")
+    public R<List<NursingLevel>> listAll()
+    {
+
+    	return R.ok(nursingLevelService.listAll());
+    }
 }

@@ -7,6 +7,7 @@ import com.carenest.common.core.domain.R;
 import com.carenest.common.enums.BusinessType;
 import com.carenest.nursing.domain.Floor;
 import com.carenest.nursing.service.IFloorService;
+import com.carenest.nursing.vo.TreeVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -93,6 +94,15 @@ public class FloorController extends BaseController
     @ApiOperation(value = "获取所有楼层 (负责老人)", notes = "无需参数，获取所有楼层，返回楼层信息列表")
     public R<List<Floor>> getAllFloorsWithNur() {
         List<Floor> list = floorService.selectAllByNur();
+        return R.ok(list);
+    }
+
+    @GetMapping("/getRoomAndBedByBedStatus/{status}")
+    @ApiOperation(value = "获取所有楼层 (负责老人)", notes = "无需参数，获取所有楼层，返回楼层信息列表")
+    public R<List<TreeVo>> getRoomAndBedByBedStatus(@ApiParam(value = "床位状态", required = true)
+                                                        @PathVariable Integer status)
+    {
+        List<TreeVo> list = floorService.getRoomAndBedByBedStatus(status);
         return R.ok(list);
     }
 }

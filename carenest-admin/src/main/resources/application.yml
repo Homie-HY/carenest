@@ -136,7 +136,7 @@ xss:
 aliyun:
   oss:
     endpoint: https://oss-cn-beijing.aliyuncs.com
-    bucketName: carenest
+    bucketName: zznursing-homie
 
 dept:
   nursingId: 201

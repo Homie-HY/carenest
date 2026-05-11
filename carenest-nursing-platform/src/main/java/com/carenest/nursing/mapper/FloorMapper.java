@@ -2,7 +2,9 @@ package com.carenest.nursing.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.carenest.nursing.domain.Floor;
+import com.carenest.nursing.vo.TreeVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -68,4 +70,11 @@ public interface FloorMapper extends BaseMapper<Floor>
      * @return 结果
      */
     List<Floor> selectAllByNur();
+
+    /**
+     * 根据房间状态查询房间和床位
+     * @param status 状态
+     * @return 结果
+     */
+    List<TreeVo> getRoomAndBedByBedStatus(@Param("status") Integer status);
 }
