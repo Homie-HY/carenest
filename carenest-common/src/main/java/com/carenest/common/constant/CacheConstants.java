@@ -49,4 +49,28 @@ public class CacheConstants
      * 护理计划缓存key
      */
     public static final Object NURSING_PLAN_ALL_KEY = "nursingPlan:all";
+    /**
+     * IoT设备最新数据缓存key
+     */
+    public static final String IOT_DEVICE_LAST_DATA = "iot_device_last_data";
+    /**
+     * 健康报告缓存key
+     */
+    public static final String HEALTH_REPORT = "health_report";
+    /**
+     * IoT所有产品列表缓存key
+     */
+    public static final String IOT_ALL_PRODUCT_LIST = "iot_all_product_list";
+    /**
+     * 告警触发次数计数前缀
+     */
+    public static final String ALERT_TRIGGER_COUNT_PREFIX = "alert_trigger_count:";
+    /**
+     * 告警静默期前缀
+     */
+    public static final String ALERT_SILENT_PREFIX = "alert_silent:";
+    /**
+     * 护理项目缓存key
+     */
+    public static final String NURSING_PROJECT_ALL_KEY = "nursingProject:all";
 }

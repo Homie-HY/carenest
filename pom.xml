@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	
+    <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.carenest</groupId>
     <artifactId>carenest</artifactId>
     <version>3.8.9</version>
@@ -11,7 +11,7 @@
     <name>carenest</name>
     <url>http://www.ruoyi.vip</url>
     <description>CareNest</description>
-    
+
     <properties>
         <carenest.version>3.8.9</carenest.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +39,10 @@
         <mybatis-plus-spring-boot.version>3.5.2</mybatis-plus-spring-boot.version>
         <aliyun.sdk.oss>3.17.4</aliyun.sdk.oss>
         <hutool-all.version>5.8.10</hutool-all.version>
+        <openai-java.version>2.8.1</openai-java.version>
+        <kotlin.version>1.9.23</kotlin.version>
+        <jackson.version>2.16.1</jackson.version>
+        <okhttp.version>4.12.0</okhttp.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -266,6 +270,85 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-bom</artifactId>
+                <version>${kotlin.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- Kotlin Standard Library -->
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-reflect</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk8</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-stdlib-jdk7</artifactId>
+                <version>${kotlin.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-kotlin</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.openai</groupId>
+                <artifactId>openai-java</artifactId>
+                <version>${openai-java.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
             </dependency>
 
         </dependencies>

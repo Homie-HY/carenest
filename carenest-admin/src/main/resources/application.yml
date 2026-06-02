@@ -140,3 +140,15 @@ aliyun:
 
 dept:
   nursingId: 201
+
+# 告警相关配置
+alert:
+  deviceMaintainerRole: 维修工
+  managerRole: 超级管理员
+
+# 大模型配置（小米 MiMo）
+llm:
+  xiaomi:
+    api-key: ${LLM_XIAOMI_API_KEY}
+    base-url: https://api.xiaomimimo.com/v1
+    model: mimo-v2.5-pro

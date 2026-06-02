@@ -5,18 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/**
- * 启动程序
- * 
- * @author ruoyi
- */
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
-@EnableScheduling//开启定时任务
+@EnableScheduling
 public class RuoYiApplication
 {
     public static void main(String[] args)
     {
-        // System.setProperty("spring.devtools.restart.enabled", "false");
+
+        // 完全禁止 PDFBox 扫描系统字体
+        System.setProperty("pdfbox.fontcache.disable", "true");
+        System.setProperty("org.apache.pdfbox.font.disable.system", "true");
+        System.setProperty("org.apache.pdfbox.rendering.UsePureJavaFonts", "true");
+
         SpringApplication.run(RuoYiApplication.class, args);
         System.out.println("(♥◠‿◠)ﾉﾞ  若依启动成功   ლ(´ڡ`ლ)ﾞ  \n" +
                 " .-------.       ____     __        \n" +

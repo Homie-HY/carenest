@@ -22,6 +22,11 @@
             <groupId>com.carenest</groupId>
             <artifactId>carenest-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.carenest</groupId>
+            <artifactId>carenest-oss</artifactId>
+        </dependency>
     </dependencies>
+
 
 </project>
