@@ -91,10 +91,6 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
 
     /**
      * 保存大模型返回的结果和前端传递的老人信息到数据库
-     *
-     * @param healthReportVo
-     * @param healthAssessment 老人基本信息
-     * @return 记录的id
      */
     private Long saveHealthAssessment(HealthReportVo healthReportVo, HealthAssessment healthAssessment) {
         // 老人身份证号
@@ -144,8 +140,6 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
 
     /**
      * 清理AI返回的结果，提取纯JSON内容
-     * @param aiResponse AI原始返回结果
-     * @return 清理后的JSON字符串
      */
     private String cleanAiResponse(String aiResponse) {
         if (aiResponse == null || aiResponse.trim().isEmpty()) {
@@ -183,9 +177,6 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     }
     /**
      * 通过健康评分计算一个护理等级
-     *
-     * @param healthScore 健康评分
-     * @return 护理等级名称
      */
     private String getLevelNameByHealthScore(double healthScore) {
         if (healthScore > 100 || healthScore < 0) {
@@ -205,9 +196,6 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     }
     /**
      * 获取Prompt提示词
-     *
-     * @param idCard 身份证号
-     * @return 提示词
      */
     private String getPrompt(String idCard) {
         // 获取文件中的内容
@@ -272,9 +260,6 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     }
     /**
      * 修改健康评估
-     *
-     * @param healthAssessment 健康评估
-     * @return 结果
      */
     @Override
     public int updateHealthAssessment(HealthAssessment healthAssessment) {
@@ -282,19 +267,13 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     }
     /**
      * 批量删除健康评估
-     *
-     * @param ids 需要删除的健康评估主键
-     * @return 结果
      */
     @Override
     public int deleteHealthAssessmentByIds(Long[] ids) {
         return removeByIds(Arrays.asList(ids)) ? 1 : 0;
     }
     /**
-     * 删除健康评估信息
-     *
-     * @param id 健康评估主键
-     * @return 结果
+     * 删除健康评估信息果
      */
     @Override
     public int deleteHealthAssessmentById(Long id) {

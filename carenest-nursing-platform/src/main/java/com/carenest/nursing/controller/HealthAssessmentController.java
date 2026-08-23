@@ -76,7 +76,7 @@ public class HealthAssessmentController extends BaseController
     }
 
     /**
-     * 获取健康评估详细信息
+     * 查询健康评估
      */
     @ApiOperation("获取健康评估详细信息")
     @PreAuthorize("@ss.hasPermi('nursing:healthAssessment:query')")
