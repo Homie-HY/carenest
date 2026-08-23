@@ -208,3 +208,7 @@ llm:
     api-key: ${LLM_XIAOMI_API_KEY}
     base-url: https://api.xiaomimimo.com/v1
     model: mimo-v2.5-pro
+
+wechat:
+    appId: wxa44cb06cd6797b5b
+    appSecret: 6fc2f71c9886c5620a58d2f771b05ef9

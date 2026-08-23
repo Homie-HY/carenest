@@ -1,6 +1,8 @@
 package com.carenest.framework.config;
 
 import java.util.concurrent.TimeUnit;
+
+import com.carenest.framework.interceptor.MemberInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ public class ResourcesConfig implements WebMvcConfigurer
 {
     @Autowired
     private RepeatSubmitInterceptor repeatSubmitInterceptor;
+    @Autowired
+    private MemberInterceptor memberInterceptor;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry)
@@ -38,7 +42,10 @@ public class ResourcesConfig implements WebMvcConfigurer
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/")
                 .setCacheControl(CacheControl.maxAge(5, TimeUnit.HOURS).cachePublic());
     }
-
+    private static final String[] EXCLUDE_PATH_PATTERNS = new String[] {
+            "/member/user/login",
+            "/member/roomTypes"
+    };
     /**
      * 自定义拦截规则
      */
@@ -46,6 +53,7 @@ public class ResourcesConfig implements WebMvcConfigurer
     public void addInterceptors(InterceptorRegistry registry)
     {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(memberInterceptor).excludePathPatterns(EXCLUDE_PATH_PATTERNS).addPathPatterns("/member/**");
     }
 
     /**

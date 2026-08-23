@@ -26,6 +26,10 @@
             <groupId>com.carenest</groupId>
             <artifactId>carenest-oss</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.carenest</groupId>
+            <artifactId>carenest-framework</artifactId>
+        </dependency>
     </dependencies>
 
 

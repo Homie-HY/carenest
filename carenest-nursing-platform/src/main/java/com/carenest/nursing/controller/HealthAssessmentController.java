@@ -95,7 +95,6 @@ public class HealthAssessmentController extends BaseController
     @PostMapping
     public AjaxResult add(@RequestBody @ApiParam("新增的健康评估对象") HealthAssessment healthAssessment)
     {
-//        return toAjax(healthAssessmentService.insertHealthAssessment(healthAssessment));
         Long id = healthAssessmentService.insertHealthAssessment(healthAssessment);
         return success(id);
     }

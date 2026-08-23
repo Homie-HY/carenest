@@ -205,6 +205,13 @@
             <artifactId>hutool-all</artifactId>
         </dependency>
 
+        <!--单元测试-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!--pdfbox-->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>

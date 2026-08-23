@@ -20,56 +20,40 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 /**
  * 健康评估Service业务层处理
- * 
+ *
  * @author alexis
  * @date 2026-05-30
  */
 @Service
-public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMapper, HealthAssessment> implements IHealthAssessmentService
-{
+public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMapper, HealthAssessment> implements IHealthAssessmentService {
     @Autowired
     private HealthAssessmentMapper healthAssessmentMapper;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private MiMiModelInvoker aiModelInvoker;
 
     /**
      * 查询健康评估
-     * 
+     *
      * @param id 健康评估主键
      * @return 健康评估
      */
     @Override
-    public HealthAssessment selectHealthAssessmentById(Long id)
-    {
+    public HealthAssessment selectHealthAssessmentById(Long id) {
         return getById(id);
     }
 
     /**
      * 查询健康评估列表
-     * 
+     *
      * @param healthAssessment 健康评估
      * @return 健康评估
      */
     @Override
-    public List<HealthAssessment> selectHealthAssessmentList(HealthAssessment healthAssessment)
-    {
+    public List<HealthAssessment> selectHealthAssessmentList(HealthAssessment healthAssessment) {
         return healthAssessmentMapper.selectHealthAssessmentList(healthAssessment);
     }
-
-    /**
-     * 新增健康评估
-     * 
-     * @param healthAssessment 健康评估
-     * @return 结果
-     */
-//    @Override
-//    public int insertHealthAssessment(HealthAssessment healthAssessment)
-//    {
-//        return save(healthAssessment) ? 1 : 0;
-//    }
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
-
-    @Autowired
-    private MiMiModelInvoker aiModelInvoker;
 
     /**
      * 新增健康评估
@@ -78,26 +62,20 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
      * @return 结果
      */
     @Override
-    public Long insertHealthAssessment(HealthAssessment healthAssessment)
-    {
+    public Long insertHealthAssessment(HealthAssessment healthAssessment) {
         // 1.设计Prompt提示词（需要从Redis中读取当前身份证号对应的体检报告）
         String prompt = getPrompt(healthAssessment.getIdCard());
-
         // 2.调用小米大模型，分析体检报告，获取分析结果
         String xiaomiResult = aiModelInvoker.miMoInvoker(prompt);
-        
         // 打印原始返回结果，便于调试
         System.out.println("========== AI原始返回结果 ==========");
         System.out.println(xiaomiResult);
         System.out.println("====================================");
-
         // 3.清理AI返回的结果（去除Markdown标记、多余文字等）
         String cleanedJson = cleanAiResponse(xiaomiResult);
-        
         System.out.println("========== 清理后的JSON ==========");
         System.out.println(cleanedJson);
         System.out.println("==================================");
-
         // 4.将分析结果保存到数据库中，并返回保存的这条记录的id
         // 将大模型返回的字符串解析为对象，方便取数据
         HealthReportVo healthReportVo;
@@ -113,9 +91,10 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
 
     /**
      * 保存大模型返回的结果和前端传递的老人信息到数据库
-     * @param healthReportVo        千帆大模型返回的结果
-     * @param healthAssessment      老人基本信息
-     * @return  记录的id
+     *
+     * @param healthReportVo
+     * @param healthAssessment 老人基本信息
+     * @return 记录的id
      */
     private Long saveHealthAssessment(HealthReportVo healthReportVo, HealthAssessment healthAssessment) {
         // 老人身份证号
@@ -172,9 +151,7 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
         if (aiResponse == null || aiResponse.trim().isEmpty()) {
             throw new BaseException("AI返回结果为空");
         }
-        
         String cleaned = aiResponse.trim();
-        
         // 1. 去除Markdown代码块标记 ```json ... ```
         if (cleaned.startsWith("```")) {
             // 找到第一个换行符后的内容
@@ -187,39 +164,33 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
                 cleaned = cleaned.substring(0, cleaned.length() - 3);
             }
         }
-        
         // 2. 去除可能的前缀文字，找到第一个 '{'
         int firstBrace = cleaned.indexOf('{');
         if (firstBrace != -1 && firstBrace > 0) {
             cleaned = cleaned.substring(firstBrace);
         }
-        
         // 3. 去除可能的后缀文字，找到最后一个 '}'
         int lastBrace = cleaned.lastIndexOf('}');
         if (lastBrace != -1 && lastBrace < cleaned.length() - 1) {
             cleaned = cleaned.substring(0, lastBrace + 1);
         }
-        
         cleaned = cleaned.trim();
-        
         // 验证是否是合法的JSON开始和结束
         if (!cleaned.startsWith("{") || !cleaned.endsWith("}")) {
             throw new BaseException("AI返回的内容不是合法的JSON格式");
         }
-        
         return cleaned;
     }
-
     /**
      * 通过健康评分计算一个护理等级
-     * @param healthScore       健康评分
-     * @return  护理等级名称
+     *
+     * @param healthScore 健康评分
+     * @return 护理等级名称
      */
     private String getLevelNameByHealthScore(double healthScore) {
         if (healthScore > 100 || healthScore < 0) {
             throw new BaseException("健康评分值不合法");
         }
-
         if (healthScore >= 90) {
             return "四级护理等级";
         } else if (healthScore >= 80) {
@@ -232,21 +203,19 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
             return "特级护理等级";
         }
     }
-
     /**
      * 获取Prompt提示词
-     * @param idCard    身份证号
-     * @return  提示词
+     *
+     * @param idCard 身份证号
+     * @return 提示词
      */
     private String getPrompt(String idCard) {
         // 获取文件中的内容
         String content = (String) redisTemplate.opsForHash().get("healthReport", idCard);
-
         // 判断是否为空
         if (StringUtils.isEmpty(content)) {
             throw new BaseException("文件提取内容失败，请重新上传提交报告");
         }
-
         String prompt = "请以一个专业医生的视角来分析这份体检报告，报告中包含了一些异常数据，我需要您对这些数据进行解读，并给出相应的健康建议。\n" +
                 "体检内容如下：\n" +
                 content + "    \n" +
@@ -301,40 +270,34 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
                 "}";
         return prompt;
     }
-
     /**
      * 修改健康评估
-     * 
+     *
      * @param healthAssessment 健康评估
      * @return 结果
      */
     @Override
-    public int updateHealthAssessment(HealthAssessment healthAssessment)
-    {
+    public int updateHealthAssessment(HealthAssessment healthAssessment) {
         return updateById(healthAssessment) ? 1 : 0;
     }
-
     /**
      * 批量删除健康评估
-     * 
+     *
      * @param ids 需要删除的健康评估主键
      * @return 结果
      */
     @Override
-    public int deleteHealthAssessmentByIds(Long[] ids)
-    {
+    public int deleteHealthAssessmentByIds(Long[] ids) {
         return removeByIds(Arrays.asList(ids)) ? 1 : 0;
     }
-
     /**
      * 删除健康评估信息
-     * 
+     *
      * @param id 健康评估主键
      * @return 结果
      */
     @Override
-    public int deleteHealthAssessmentById(Long id)
-    {
+    public int deleteHealthAssessmentById(Long id) {
         return removeById(id) ? 1 : 0;
     }
 }

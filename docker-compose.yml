@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # ==================== MySQL ====================
+  mysql:
+    image: mysql:8.0
+    container_name: carenest-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${CARENEST_MYSQL_PASSWORD}
+      MYSQL_DATABASE: carenest
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql/ry_20250417.sql:/docker-entrypoint-initdb.d/01_ry.sql
+      - ./sql/carenest-dev06-init.sql:/docker-entrypoint-initdb.d/02_carenest.sql
+      - ./sql/quartz.sql:/docker-entrypoint-initdb.d/03_quartz.sql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - carenest-net
+
+  # ==================== Redis ====================
+  redis:
+    image: redis:7
+    container_name: carenest-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass ${CARENEST_REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    networks:
+      - carenest-net
+
+  # ==================== 后端应用 ====================
+  carenest-admin:
+    build:
+      context: ./carenest-admin
+      dockerfile: Dockerfile
+    container_name: carenest-admin
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - /usr/local/carenest-admin/logs:/home/ruoyi/logs
+    environment:
+      # 覆盖配置文件中的 MySQL 和 Redis 地址，指向容器服务名
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: ${CARENEST_REDIS_PASSWORD}
+      SPRING_DATASOURCE_DRUID_MASTER_URL: jdbc:mysql://mysql:3306/carenest?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
+      SPRING_DATASOURCE_DRUID_MASTER_USERNAME: root
+      SPRING_DATASOURCE_DRUID_MASTER_PASSWORD: ${CARENEST_MYSQL_PASSWORD}
+      OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID}
+      OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET}
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - carenest-net
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  carenest-net:
+    driver: bridge

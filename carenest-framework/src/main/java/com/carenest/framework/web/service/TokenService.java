@@ -170,6 +170,19 @@ public class TokenService
     }
 
     /**
+     * 从数据声明生成令牌（公开方法，供非LoginUser体系使用，如会员登录）
+     *
+     * @param claims 数据声明
+     * @return 令牌
+     */
+    public String createMemberToken(Map<String, Object> claims)
+    {
+        return Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+
+    /**
      * 从数据声明生成令牌
      *
      * @param claims 数据声明
@@ -189,7 +202,7 @@ public class TokenService
      * @param token 令牌
      * @return 数据声明
      */
-    private Claims parseToken(String token)
+    public Claims parseToken(String token)
     {
         return Jwts.parser()
                 .setSigningKey(secret)
