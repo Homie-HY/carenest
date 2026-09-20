@@ -37,6 +37,14 @@ nbdist/
 .nb-gradle/
 
 ######################################################################
+# Secrets
+# 仓库根目录的本地环境变量文件（docker-compose 读取），只提交 .env.example 模板
+# 仅限定根目录，不影响前端 carenest-ui/.env* 等已纳管的构建配置文件
+/.env
+/.env.local
+!/.env.example
+
+######################################################################
 # Others
 *.log
 *.xml.versionsBackup

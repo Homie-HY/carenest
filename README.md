@@ -1,95 +1,138 @@
-<p align="center">
-	<img alt="logo" src="https://oscimg.oschina.net/oscnet/up-d3d0a9303e11d522a06cd263f3079027715.png">
-</p>
-<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">RuoYi v3.8.9</h1>
-<h4 align="center">基于SpringBoot+Vue前后端分离的Java快速开发框架</h4>
-<p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue/stargazers"><img src="https://gitee.com/y_project/RuoYi-Vue/badge/star.svg?theme=dark"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue"><img src="https://img.shields.io/badge/RuoYi-v3.8.9-brightgreen.svg"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
-</p>
+# carenest 智慧养老护理管理系统
 
-## 平台简介
+基于 [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) v3.8.9 前后端分离框架二次开发的养老机构管理系统。后端为 Maven 多模块工程，前端为 Vue3 管理端（`carenest-ui`），覆盖老人档案、入住合同、床位、护理、健康评估、报警等养老业务全链路，并在健康评估环节接入大模型对体检报告做智能分析。
 
-若依是一套全部开源的快速开发平台，毫无保留给个人及企业免费使用。
+## 技术栈
 
-* 前端采用Vue、Element UI。
-* 后端采用Spring Boot、Spring Security、Redis & Jwt。
-* 权限认证使用Jwt，支持多终端认证系统。
-* 支持加载动态权限菜单，多方式轻松权限控制。
-* 高效率开发，使用代码生成器可以一键生成前后端代码。
-* 提供了技术栈（[Vue3](https://v3.cn.vuejs.org) [Element Plus](https://element-plus.org/zh-CN) [Vite](https://cn.vitejs.dev)）版本[RuoYi-Vue3](https://gitcode.com/yangzongzhuan/RuoYi-Vue3)，保持同步更新。
-* 提供了单应用版本[RuoYi-Vue-fast](https://gitcode.com/yangzongzhuan/RuoYi-Vue-fast)，Oracle版本[RuoYi-Vue-Oracle](https://gitcode.com/yangzongzhuan/RuoYi-Vue-Oracle)，保持同步更新。
-* 不分离版本，请移步[RuoYi](https://gitee.com/y_project/RuoYi)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
-* 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
+| 层次 | 技术 |
+| --- | --- |
+| 后端 | Java 11、Spring Boot 2.5.15、Spring Security、JWT、MyBatis-Plus 3.5.2、PageHelper |
+| 数据库 / 中间件 | MySQL、Druid 1.2.23 连接池、Redis、Quartz 定时调度 |
+| 前端 | Vue 3、Element Plus、Vite、Pinia |
+| 接口文档 / 存储 | Knife4j（Swagger 增强）、阿里云 OSS |
+| AI / 文档解析 | openai-java 2.8.1（OpenAI 兼容协议，对接小米 MiMo 大模型）、Apache PDFBox |
+| 部署 | Docker Compose、Jenkins Pipeline |
 
-## 内置功能
+## 业务功能
 
-1.  用户管理：用户是系统操作者，该功能主要完成系统用户配置。
-2.  部门管理：配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。
-3.  岗位管理：配置系统用户所属担任职务。
-4.  菜单管理：配置系统菜单，操作权限，按钮权限标识等。
-5.  角色管理：角色菜单权限分配、设置角色按机构进行数据范围权限划分。
-6.  字典管理：对系统中经常使用的一些较为固定的数据进行维护。
-7.  参数管理：对系统动态配置常用参数。
-8.  通知公告：系统通知公告信息发布维护。
-9.  操作日志：系统正常操作日志记录和查询；系统异常信息日志记录和查询。
-10. 登录日志：系统登录日志记录查询包含登录异常。
-11. 在线用户：当前系统中活跃用户状态监控。
-12. 定时任务：在线（添加、修改、删除)任务调度包含执行结果日志。
-13. 代码生成：前后端代码的生成（java、html、xml、sql）支持CRUD下载 。
-14. 系统接口：根据业务代码自动生成相关的api接口文档。
-15. 服务监控：监视当前系统CPU、内存、磁盘、堆栈等相关信息。
-16. 缓存监控：对系统的缓存信息查询，命令统计等。
-17. 在线构建器：拖动表单元素生成相应的HTML代码。
-18. 连接池监视：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
+**机构管理端**
 
-## 在线体验
+1. 老人管理：老人档案、护理老人关联。
+2. 入住管理：入住办理、入住配置、合同管理。
+3. 床位管理：楼层、房间、房型、床位四级维护。
+4. 护理管理：护理等级、护理计划、护理项目。
+5. 健康评估：体检报告上传 + 大模型智能分析（风险等级、健康指数、异常项解读、八大系统评分、入住与护理等级建议）。
+6. 报警与设备：报警规则、报警数据、IoT 设备管理。
 
-- admin/admin123  
-- 陆陆续续收到一些打赏，为了更好的体验已用于演示服务器升级。谢谢各位小伙伴。
+**用户端（Member / 家属）**
 
-演示地址：http://vue.ruoyi.vip  
-文档地址：http://doc.ruoyi.vip
+7. 家庭成员维护、房型浏览、入住预约。
 
-## 演示图
+**系统管理（RuoYi 内置）**
 
-<table>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/cd1f90be5f2684f4560c9519c0f2a232ee8.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/1cbcf0e6f257c7d3a063c0e3f2ff989e4b3.jpg"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8074972883b5ba0622e13246738ebba237a.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-9f88719cdfca9af2e58b352a20e23d43b12.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-39bf2584ec3a529b0d5a3b70d15c9b37646.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-936ec82d1f4872e1bc980927654b6007307.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-b2d62ceb95d2dd9b3fbe157bb70d26001e9.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d67451d308b7a79ad6819723396f7c3d77a.png"/></td>
-    </tr>	 
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/5e8c387724954459291aafd5eb52b456f53.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/644e78da53c2e92a95dfda4f76e6d117c4b.jpg"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-8370a0d02977eebf6dbf854c8450293c937.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-49003ed83f60f633e7153609a53a2b644f7.png"/></td>
-    </tr>
-	<tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-d4fe726319ece268d4746602c39cffc0621.png"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-c195234bbcd30be6927f037a6755e6ab69c.png"/></td>
-    </tr>
-    <tr>
-        <td><img src="https://oscimg.oschina.net/oscnet/b6115bc8c31de52951982e509930b20684a.jpg"/></td>
-        <td><img src="https://oscimg.oschina.net/oscnet/up-5e4daac0bb59612c5038448acbcef235e3a.png"/></td>
-    </tr>
-</table>
+8. 用户、角色、菜单、部门、字典、参数、通知、操作/登录日志、在线用户、定时任务、代码生成、服务/缓存监控。
 
+## 项目结构
 
-## 若依前后端分离交流群
+| 模块 | 职责 |
+| --- | --- |
+| carenest-admin | 启动模块，系统管理与监控控制器（启动类 `com.carenest.RuoYiApplication`） |
+| carenest-framework | 框架核心：安全认证、配置、拦截器、AOP |
+| carenest-system | 系统领域：用户、角色、菜单、字典等 |
+| carenest-nursing-platform | 护理业务模块：老人、入住、合同、床位、护理、评估、报警 |
+| carenest-quartz | 定时任务调度 |
+| carenest-generator | 前后端代码生成器 |
+| carenest-common | 通用工具、注解、常量、异常处理，大模型调用封装（`com.carenest.common.ai`） |
+| carenest-oss | 阿里云 OSS 文件存储封装 |
+| carenest-ui | Vue3 + Element Plus 前端管理端 |
+| sql | 数据库初始化脚本 |
 
-QQ群： [![加入QQ群](https://img.shields.io/badge/已满-937441-blue.svg)](https://jq.qq.com/?_wv=1027&k=5bVB1og) [![加入QQ群](https://img.shields.io/badge/已满-887144332-blue.svg)](https://jq.qq.com/?_wv=1027&k=5eiA4DH) [![加入QQ群](https://img.shields.io/badge/已满-180251782-blue.svg)](https://jq.qq.com/?_wv=1027&k=5AxMKlC) [![加入QQ群](https://img.shields.io/badge/已满-104180207-blue.svg)](https://jq.qq.com/?_wv=1027&k=51G72yr) [![加入QQ群](https://img.shields.io/badge/已满-186866453-blue.svg)](https://jq.qq.com/?_wv=1027&k=VvjN2nvu) [![加入QQ群](https://img.shields.io/badge/已满-201396349-blue.svg)](https://jq.qq.com/?_wv=1027&k=5vYAqA05) [![加入QQ群](https://img.shields.io/badge/已满-101456076-blue.svg)](https://jq.qq.com/?_wv=1027&k=kOIINEb5) [![加入QQ群](https://img.shields.io/badge/已满-101539465-blue.svg)](https://jq.qq.com/?_wv=1027&k=UKtX5jhs) [![加入QQ群](https://img.shields.io/badge/已满-264312783-blue.svg)](https://jq.qq.com/?_wv=1027&k=EI9an8lJ) [![加入QQ群](https://img.shields.io/badge/已满-167385320-blue.svg)](https://jq.qq.com/?_wv=1027&k=SWCtLnMz) [![加入QQ群](https://img.shields.io/badge/已满-104748341-blue.svg)](https://jq.qq.com/?_wv=1027&k=96Dkdq0k) [![加入QQ群](https://img.shields.io/badge/已满-160110482-blue.svg)](https://jq.qq.com/?_wv=1027&k=0fsNiYZt) [![加入QQ群](https://img.shields.io/badge/已满-170801498-blue.svg)](https://jq.qq.com/?_wv=1027&k=7xw4xUG1) [![加入QQ群](https://img.shields.io/badge/已满-108482800-blue.svg)](https://jq.qq.com/?_wv=1027&k=eCx8eyoJ) [![加入QQ群](https://img.shields.io/badge/已满-101046199-blue.svg)](https://jq.qq.com/?_wv=1027&k=SpyH2875) [![加入QQ群](https://img.shields.io/badge/已满-136919097-blue.svg)](https://jq.qq.com/?_wv=1027&k=tKEt51dz) [![加入QQ群](https://img.shields.io/badge/已满-143961921-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=0vBbSb0ztbBgVtn3kJS-Q4HUNYwip89G&authKey=8irq5PhutrZmWIvsUsklBxhj57l%2F1nOZqjzigkXZVoZE451GG4JHPOqW7AW6cf0T&noverify=0&group_code=143961921) [![加入QQ群](https://img.shields.io/badge/已满-174951577-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=ZFAPAbp09S2ltvwrJzp7wGlbopsc0rwi&authKey=HB2cxpxP2yspk%2Bo3WKTBfktRCccVkU26cgi5B16u0KcAYrVu7sBaE7XSEqmMdFQp&noverify=0&group_code=174951577) [![加入QQ群](https://img.shields.io/badge/已满-161281055-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Fn2aF5IHpwsy8j6VlalNJK6qbwFLFHat&authKey=uyIT%2B97x2AXj3odyXpsSpVaPMC%2Bidw0LxG5MAtEqlrcBcWJUA%2FeS43rsF1Tg7IRJ&noverify=0&group_code=161281055) [![加入QQ群](https://img.shields.io/badge/已满-138988063-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=XIzkm_mV2xTsUtFxo63bmicYoDBA6Ifm&authKey=dDW%2F4qsmw3x9govoZY9w%2FoWAoC4wbHqGal%2BbqLzoS6VBarU8EBptIgPKN%2FviyC8j&noverify=0&group_code=138988063) [![加入QQ群](https://img.shields.io/badge/已满-151450850-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=DkugnCg68PevlycJSKSwjhFqfIgrWWwR&authKey=pR1Pa5lPIeGF%2FFtIk6d%2FGB5qFi0EdvyErtpQXULzo03zbhopBHLWcuqdpwY241R%2F&noverify=0&group_code=151450850) [![加入QQ群](https://img.shields.io/badge/已满-224622315-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=F58bgRa-Dp-rsQJThiJqIYv8t4-lWfXh&authKey=UmUs4CVG5OPA1whvsa4uSespOvyd8%2FAr9olEGaWAfdLmfKQk%2FVBp2YU3u2xXXt76&noverify=0&group_code=224622315) [![加入QQ群](https://img.shields.io/badge/已满-287842588-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=Nxb2EQ5qozWa218Wbs7zgBnjLSNk_tVT&authKey=obBKXj6SBKgrFTJZx0AqQnIYbNOvBB2kmgwWvGhzxR67RoRr84%2Bus5OadzMcdJl5&noverify=0&group_code=287842588) [![加入QQ群](https://img.shields.io/badge/已满-187944233-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=numtK1M_I4eVd2Gvg8qtbuL8JgX42qNh&authKey=giV9XWMaFZTY%2FqPlmWbkB9g3fi0Ev5CwEtT9Tgei0oUlFFCQLDp4ozWRiVIzubIm&noverify=0&group_code=187944233) [![加入QQ群](https://img.shields.io/badge/228578329-blue.svg)](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=G6r5KGCaa3pqdbUSXNIgYloyb8e0_L0D&authKey=4w8tF1eGW7%2FedWn%2FHAypQksdrML%2BDHolQSx7094Agm7Luakj9EbfPnSTxSi2T1LQ&noverify=0&group_code=228578329) 点击按钮入群。
+## AI 能力：体检报告智能分析
+
+目前全系统唯一的大模型落地点在**入住健康评估**业务，其余模块均为常规 CRUD。
+
+**调用链路**
+
+1. 前端上传体检报告 PDF → `HealthAssessmentController#uploadFile`：校验类型与大小（≤10MB）→ 存阿里云 OSS → `PDFUtil.pdfToString` 抽取纯文本 → 以身份证号为 field 暂存 Redis Hash `healthReport`。
+2. 提交评估 → `HealthAssessmentServiceImpl#insertHealthAssessment`：从 Redis 取报告文本，按「专业医生视角」拼装 Prompt（约定输出总检日期、风险等级、健康指数、风险占比分布、异常项七字段、八大系统评分、报告总结，并强制返回纯 JSON）。
+3. `MiMiModelInvoker#miMoInvoker` 通过 OpenAI 兼容 SDK 发起 ChatCompletion 调用。
+4. `cleanAiResponse` 剥离 Markdown 代码块与前后缀杂文，截取首个 `{` 到末个 `}`，反序列化为 `HealthReportVo`；解析失败抛业务异常提示重新提交。
+5. `saveHealthAssessment` 落库：由身份证号推导出生日期/年龄/性别，按健康分推导护理等级（90+ 四级 … <60 特级）与入住建议（≥60 建议入住），疾病风险分布、异常分析、八大系统评分以 JSON 字符串入库。
+
+**相关代码**
+
+| 位置 | 作用 |
+| --- | --- |
+| `carenest-common/.../common/ai/LLMConfig.java` | 绑定 `llm.xiaomi` 配置（apiKey / baseUrl / model） |
+| `carenest-common/.../common/ai/MiMiModelInvoker.java` | 大模型调用封装 |
+| `carenest-nursing-platform/.../service/impl/HealthAssessmentServiceImpl.java` | Prompt 设计、结果清洗、JSON 解析与业务落库 |
+| `carenest-nursing-platform/.../controller/HealthAssessmentController.java` | 报告上传、PDF 解析、Redis 暂存 |
+
+**配置**
+
+`carenest-admin/src/main/resources/application-{dev,test,prod}.yml` 中，API Key 以环境变量占位，仓库内不存放真实密钥：
+
+```yaml
+llm:
+  xiaomi:
+    api-key: ${LLM_XIAOMI_API_KEY:}
+    base-url: https://api.xiaomimimo.com/v1
+    model: mimo-v2.5-pro
+```
+
+> 注意：MiMo 不支持 `response_format`，JSON 结构完全依赖 Prompt 约束 + 服务端 `cleanAiResponse` 兜底清洗。未设置 `LLM_XIAOMI_API_KEY` 时应用仍能正常启动，但提交健康评估会调用失败。
+
+## 环境变量与密钥管理
+
+所有敏感凭证统一通过环境变量注入，**不得硬编码到 yml / Dockerfile / Java 代码**。根目录提供 `.env.example` 模板，复制为 `.env`（已 gitignore）后填入真实值：
+
+```powershell
+Copy-Item .env.example .env
+```
+
+| 变量 | 用途 | 消费方 |
+| --- | --- | --- |
+| `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET` | 阿里云 OSS 文件上传 | `AliyunOSSOperator`（`EnvironmentVariableCredentialsProvider`） |
+| `LLM_XIAOMI_API_KEY` | 小米 MiMo 大模型 | `llm.xiaomi.api-key` |
+| `WECHAT_APP_SECRET` | 微信小程序家属端登录 | `wechat.appSecret` |
+| `QIANFAN_API_KEY` | 百度千帆（仅 `carenest-common` 单元测试） | `QianfanAIModelTest1` |
+
+注入方式：
+
+- **docker compose**：自动读取仓库根目录 `.env`。
+- **IDEA 本地运行**：Run Configuration → Environment variables 填入上述变量（或直接 `setx` / `$env:` 设系统变量）。
+- **Jenkins 部署**：用 Credentials 绑定为环境变量，`carenest-admin/deploy.sh` 会在 `docker run` 时透传给容器；`Dockerfile` 内不保留任何密钥。
+
+> `wechat.appId`、OSS `endpoint`/`bucketName` 属公开信息，仍保留在 yml 中。
+
+## 快速开始
+
+**后端**
+
+1. 创建 MySQL 数据库，依次导入 `sql/ry_20250417.sql`、`sql/quartz.sql`、`sql/carenest-dev06-init.sql`。
+2. 修改 `carenest-admin/src/main/resources/application-druid.yml` 中的数据库连接，并确保本地 Redis 已启动。
+3. 复制 `.env.example` 为 `.env` 并填入 OSS、MiMo、微信等密钥，再按上节说明注入到运行环境。
+4. 运行启动类 `com.carenest.RuoYiApplication`，默认端口见 `application.yml`（激活 profile 为 `dev`）。
+
+**前端**
+
+```bash
+cd carenest-ui
+npm install
+npm run dev
+```
+
+## 部署
+
+- `docker-compose.yml`：容器化一键编排，敏感变量从根目录 `.env` 读取（OSS 凭证未配置会直接报错中断）；`carenest-admin` 目录内含 `Dockerfile` 与 `deploy.sh`。
+- `Jenkinsfile`：拉取代码 → Maven 打包 → Docker 构建镜像 → 执行部署脚本；密钥需在 Jenkins Credentials 中维护。
+- 镜像本身不包含任何凭证，仅靠运行时 `-e` 注入；更换密钥无需重新构建镜像。
+
+## 分支与提交规范
+
+- 远程仓库仅保留 `master` 单一分支，所有开发与推送均在 master 上进行。
+- 提交信息统一格式：`存档N：关键词`（如 `存档2：前端代码初始化文件`），N 为递增存档序号。
+
+## 致谢
+
+- [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)：前后端分离的 Java 快速开发框架（v3.8.9）。

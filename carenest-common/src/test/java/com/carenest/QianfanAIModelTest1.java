@@ -70,8 +70,15 @@ public class QianfanAIModelTest1 {
                 "  \"summarize\": \"体检报告的总结\"\n" +
                 "}";
 
+        // 百度千帆 API Key 从环境变量读取，禁止硬编码到仓库
+        String qianfanApiKey = System.getenv("QIANFAN_API_KEY");
+        if (qianfanApiKey == null || qianfanApiKey.trim().isEmpty()) {
+            System.err.println("请先设置环境变量 QIANFAN_API_KEY，获取方式参见 https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps");
+            return;
+        }
+
         OpenAIClient client = OpenAIOkHttpClient.builder()
-                .apiKey("${QIANFAN_API_KEY}") //将your_APIKey替换为真实值，如何获取API Key请查看https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps#步骤二-获取api-key
+                .apiKey(qianfanApiKey)
                 .baseUrl("https://qianfan.baidubce.com/v2/") //千帆ModelBuilder平台地址
                 .build();
 

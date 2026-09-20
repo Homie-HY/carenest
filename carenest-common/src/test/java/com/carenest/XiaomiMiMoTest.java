@@ -7,8 +7,12 @@ import com.openai.models.chat.completions.ChatCompletionCreateParams;
 
 public class XiaomiMiMoTest {
     public static void main(String[] args) {
-        // 1. MiMo 开放平台申请的 sk- 开头 key
-        String apiKey = "${LLM_XIAOMI_API_KEY}";
+        // 1. MiMo 开放平台申请的 sk- 开头 key，从环境变量读取，禁止硬编码到仓库
+        String apiKey = System.getenv("LLM_XIAOMI_API_KEY");
+        if (apiKey == null || apiKey.trim().isEmpty()) {
+            System.err.println("请先设置环境变量 LLM_XIAOMI_API_KEY");
+            return;
+        }
 
         OpenAIClient client = OpenAIOkHttpClient.builder()
                 .apiKey(apiKey)

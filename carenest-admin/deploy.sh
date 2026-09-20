@@ -23,7 +23,15 @@ else
 fi
 
 # 启动容器
+# 敏感凭证不写入镜像，由构建机环境变量（建议用 Jenkins Credentials 注入）透传给容器
 echo "启动容器 $container_name"
 if [ $container_name = "carenest-admin" ]; then
-    docker run -d --restart=always --name $container_name -v /usr/local/carenest-admin/logs:/home/ruoyi/logs -p 9000:9000 $image_name:$image_tag
+    docker run -d --restart=always --name $container_name \
+      -v /usr/local/carenest-admin/logs:/home/ruoyi/logs \
+      -p 9000:9000 \
+      -e OSS_ACCESS_KEY_ID="$OSS_ACCESS_KEY_ID" \
+      -e OSS_ACCESS_KEY_SECRET="$OSS_ACCESS_KEY_SECRET" \
+      -e LLM_XIAOMI_API_KEY="$LLM_XIAOMI_API_KEY" \
+      -e WECHAT_APP_SECRET="$WECHAT_APP_SECRET" \
+      $image_name:$image_tag
 fi

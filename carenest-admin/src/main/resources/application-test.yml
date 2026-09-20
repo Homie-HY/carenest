@@ -203,8 +203,9 @@ alert:
   managerRole: 超级管理员
 
 # 大模型配置（小米 MiMo）
+# api-key 从环境变量 LLM_XIAOMI_API_KEY 读取，禁止将真实密钥提交到仓库
 llm:
   xiaomi:
-    api-key: ${LLM_XIAOMI_API_KEY}
+    api-key: ${LLM_XIAOMI_API_KEY:}
     base-url: https://api.xiaomimimo.com/v1
     model: mimo-v2.5-pro

@@ -203,12 +203,15 @@ alert:
   managerRole: 超级管理员
 
 # 大模型配置（小米 MiMo）
+# api-key 从环境变量 LLM_XIAOMI_API_KEY 读取，禁止将真实密钥提交到仓库
 llm:
   xiaomi:
-    api-key: ${LLM_XIAOMI_API_KEY}
+    api-key: ${LLM_XIAOMI_API_KEY:}
     base-url: https://api.xiaomimimo.com/v1
     model: mimo-v2.5-pro
 
+# 微信小程序配置
+# appId 为公开信息，appSecret 从环境变量 WECHAT_APP_SECRET 读取
 wechat:
     appId: wxa44cb06cd6797b5b
-    appSecret: 6fc2f71c9886c5620a58d2f771b05ef9
+    appSecret: ${WECHAT_APP_SECRET:}
