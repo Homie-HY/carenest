@@ -10,8 +10,11 @@ import com.carenest.common.exception.base.BaseException;
 import com.carenest.common.utils.IDCardUtils;
 import com.carenest.common.utils.StringUtils;
 import com.carenest.nursing.vo.health.HealthReportVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import com.carenest.nursing.mapper.HealthAssessmentMapper;
 import com.carenest.nursing.domain.HealthAssessment;
@@ -24,6 +27,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
  * @author alexis
  * @date 2026-05-30
  */
+@Slf4j
 @Service
 public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMapper, HealthAssessment> implements IHealthAssessmentService {
     @Autowired
@@ -32,6 +36,10 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     private RedisTemplate<String, String> redisTemplate;
     @Autowired
     private MiMiModelInvoker aiModelInvoker;
+    /** 复用框架已有线程池（bean 名前缀 health-assessment-），跑耗时的 AI 分析，避免阻塞请求线程 */
+    @Autowired
+    @Qualifier("threadPoolTaskExecutor")
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 查询健康评估
@@ -56,50 +64,82 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
     }
 
     /**
-     * 新增健康评估
+     * 新增健康评估。
+     * <p>
+     * 异步化：AI 分析体检报告耗时 10-30 秒，若在请求线程同步等待极易触发网关超时。
+     * 这里改为——先同步校验报告已上传并落一条“分析中”记录立即返回 id，
+     * 再交给线程池在后台跑 AI 分析、回填结果与状态；前端据 analysisStatus 轮询展示。
      *
-     * @param healthAssessment 健康评估
-     * @return 结果
+     * @param healthAssessment 健康评估（含老人姓名、身份证、报告URL等前端字段）
+     * @return 刚落库的记录 id
      */
     @Override
     public Long insertHealthAssessment(HealthAssessment healthAssessment) {
-        // 1.设计Prompt提示词（需要从Redis中读取当前身份证号对应的体检报告）
-        String prompt = getPrompt(healthAssessment.getIdCard());
-        // 2.调用小米大模型，分析体检报告，获取分析结果
-        String xiaomiResult = aiModelInvoker.miMoInvoker(prompt);
-        // 打印原始返回结果，便于调试
-        System.out.println("========== AI原始返回结果 ==========");
-        System.out.println(xiaomiResult);
-        System.out.println("====================================");
-        // 3.清理AI返回的结果（去除Markdown标记、多余文字等）
-        String cleanedJson = cleanAiResponse(xiaomiResult);
-        System.out.println("========== 清理后的JSON ==========");
-        System.out.println(cleanedJson);
-        System.out.println("==================================");
-        // 4.将分析结果保存到数据库中，并返回保存的这条记录的id
-        // 将大模型返回的字符串解析为对象，方便取数据
-        HealthReportVo healthReportVo;
-        try {
-            healthReportVo = JSON.parseObject(cleanedJson, HealthReportVo.class);
-        } catch (Exception e) {
-            System.err.println("JSON解析失败，原始内容: " + cleanedJson);
-            throw new BaseException("AI分析结果格式错误，请重新提交: " + e.getMessage());
+        String idCard = healthAssessment.getIdCard();
+        // 同步前置校验：报告文本必须已在上传阶段写入 Redis，否则立即报错、不落库
+        String content = (String) redisTemplate.opsForHash().get("healthReport", idCard);
+        if (StringUtils.isEmpty(content)) {
+            throw new BaseException("文件提取内容失败，请重新上传提交报告");
         }
 
-        return saveHealthAssessment(healthReportVo, healthAssessment);
-    }
-
-    /**
-     * 保存大模型返回的结果和前端传递的老人信息到数据库
-     */
-    private Long saveHealthAssessment(HealthReportVo healthReportVo, HealthAssessment healthAssessment) {
-        // 老人身份证号
-        String idCard = healthAssessment.getIdCard();
-
+        // 身份证可离线解析的基础信息先入库（不依赖 AI）
         healthAssessment.setBirthDate(IDCardUtils.getBirthDateByIdCard(idCard));
         healthAssessment.setAge(IDCardUtils.getAgeByIdCard(idCard));
         healthAssessment.setGender(IDCardUtils.getGenderFromIdCard(idCard));
+        // 标记为“分析中”，先落库拿到 id 立即返回
+        healthAssessment.setAnalysisStatus(0);
+        healthAssessment.setAssessmentTime(LocalDateTime.now());
+        healthAssessmentMapper.insert(healthAssessment);
+        Long id = healthAssessment.getId();
 
+        // 提交后台异步任务跑 AI 分析，不阻塞当前请求线程
+        threadPoolTaskExecutor.execute(() -> analyzeAsync(id, idCard));
+        log.info("健康评估[{}]已受理，转入后台 AI 分析，身份证尾号={}", id, maskIdCard(idCard));
+        return id;
+    }
+
+    /**
+     * 后台异步执行 AI 分析并回填结果。跑在线程池线程，不持有请求上下文，
+     * 因此只依赖入参 id 与 idCard，绝不触碰 SecurityUtils。
+     */
+    private void analyzeAsync(Long id, String idCard) {
+        try {
+            // 1.拼接 Prompt（内部从 Redis 读报告文本）
+            String prompt = getPrompt(idCard);
+            // 2.调用小米大模型分析体检报告
+            String xiaomiResult = aiModelInvoker.miMoInvoker(prompt);
+            log.debug("健康评估[{}] AI 原始返回：{}", id, xiaomiResult);
+            // 3.清洗并解析为对象
+            String cleanedJson = cleanAiResponse(xiaomiResult);
+            HealthReportVo healthReportVo;
+            try {
+                healthReportVo = JSON.parseObject(cleanedJson, HealthReportVo.class);
+            } catch (Exception e) {
+                log.error("健康评估[{}] JSON 解析失败，清洗后内容：{}", id, cleanedJson, e);
+                throw new BaseException("AI分析结果格式错误，请重新提交: " + e.getMessage());
+            }
+            // 4.回填 AI 结果字段 + 置为成功
+            HealthAssessment update = new HealthAssessment();
+            update.setId(id);
+            fillFromReport(update, healthReportVo);
+            update.setAnalysisStatus(1);
+            update.setAssessmentTime(LocalDateTime.now());
+            healthAssessmentMapper.updateById(update);
+            log.info("健康评估[{}] AI 分析完成", id);
+        } catch (Exception e) {
+            log.error("健康评估[{}] AI 分析失败", id, e);
+            HealthAssessment fail = new HealthAssessment();
+            fail.setId(id);
+            fail.setAnalysisStatus(2);
+            fail.setAnalysisError(truncate(e.getMessage() == null ? e.getClass().getSimpleName() : e.getMessage(), 500));
+            healthAssessmentMapper.updateById(fail);
+        }
+    }
+
+    /**
+     * 把大模型返回结果回填到实体（仅 AI 相关字段，不含身份证基础信息）。
+     */
+    private void fillFromReport(HealthAssessment healthAssessment, HealthReportVo healthReportVo) {
         // 健康评分
         double healthScore = healthReportVo.getHealthAssessment().getHealthIndex();
         healthAssessment.setHealthScore(String.valueOf(healthScore));
@@ -111,16 +151,13 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
         healthAssessment.setSuggestionForAdmission(healthScore >= 60 ? 0 : 1);
 
         // 通过健康评分计算一个推荐的护理等级
-        String nursingLevelName = getLevelNameByHealthScore(healthScore);
-        healthAssessment.setNursingLevelName(nursingLevelName);
+        healthAssessment.setNursingLevelName(getLevelNameByHealthScore(healthScore));
 
         // 统一先设置未入住
         healthAssessment.setAdmissionStatus(1);
 
         // 总检日期
         healthAssessment.setTotalCheckDate(healthReportVo.getTotalCheckDate());
-
-        healthAssessment.setAssessmentTime(LocalDateTime.now());
 
         // 报告总结
         healthAssessment.setReportSummary(healthReportVo.getSummarize());
@@ -133,9 +170,22 @@ public class HealthAssessmentServiceImpl extends ServiceImpl<HealthAssessmentMap
 
         // 八大系统评分
         healthAssessment.setSystemScore(JSON.toJSONString(healthReportVo.getSystemScore()));
+    }
 
-        healthAssessmentMapper.insert(healthAssessment);
-        return healthAssessment.getId();
+    /** 身份证脱敏，仅保留后 4 位用于日志 */
+    private String maskIdCard(String idCard) {
+        if (idCard == null || idCard.length() < 4) {
+            return "****";
+        }
+        return "****" + idCard.substring(idCard.length() - 4);
+    }
+
+    /** 截断超长文本，避免错误信息撑爆字段 */
+    private String truncate(String text, int max) {
+        if (text == null) {
+            return null;
+        }
+        return text.length() > max ? text.substring(0, max) : text;
     }
 
     /**

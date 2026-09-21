@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.carenest.common.core.domain.R;
 import com.carenest.common.utils.PDFUtil;
 import com.carenest.oss.AliyunOSSOperator;
+import lombok.extern.slf4j.Slf4j;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author alexis
  * @date 2026-05-30
  */
+@Slf4j
 @Api("健康评估管理")
 @RestController
 @RequestMapping("/nursing/healthAssessment")
@@ -146,7 +148,7 @@ public class HealthAssessmentController extends BaseController
                 return AjaxResult.error("请上传PDF格式的文件");
             }
             
-            System.out.println("开始处理PDF文件: " + originalFilename + ", 大小: " + file.getSize() + " bytes");
+            log.info("开始处理PDF文件: {}, 大小: {} bytes", originalFilename, file.getSize());
             
             // 上传到OSS
             String url = aliyunOSSOperator.upload(file.getBytes(), originalFilename);
@@ -161,11 +163,11 @@ public class HealthAssessmentController extends BaseController
             
             // 检查PDF解析是否成功
             if (content == null || content.trim().isEmpty()) {
-                System.err.println("PDF解析结果为空，文件: " + originalFilename);
+                log.warn("PDF解析结果为空，文件: {}", originalFilename);
                 return AjaxResult.error("PDF文件解析失败，可能原因：\n1. 文件已损坏或不完整\n2. 文件不是有效的PDF格式\n3. PDF文件加密或受保护\n4. PDF文件为空或没有文本内容\n请重新上传正确的PDF文件");
             }
             
-            System.out.println("PDF解析成功，提取文本长度: " + content.length());
+            log.info("PDF解析成功，提取文本长度: {}", content.length());
             
             // 临时存储到redis中
             redisTemplate.opsForHash().put("healthReport", idCardNo, content);
@@ -173,8 +175,7 @@ public class HealthAssessmentController extends BaseController
             return ajax;
         } catch (Exception e) {
             // 记录详细错误日志
-            System.err.println("文件上传异常: " + e.getClass().getName() + " - " + e.getMessage());
-            e.printStackTrace();
+            log.error("文件上传异常: {} - {}", e.getClass().getName(), e.getMessage(), e);
             return AjaxResult.error("文件上传失败: " + e.getMessage());
         }
     }

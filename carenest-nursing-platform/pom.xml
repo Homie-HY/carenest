@@ -30,6 +30,18 @@
             <groupId>com.carenest</groupId>
             <artifactId>carenest-framework</artifactId>
         </dependency>
+        <!--AI基础设施：LangChain4j装配、会话记忆、工具调用埋点、对话审计-->
+        <dependency>
+            <groupId>com.carenest</groupId>
+            <artifactId>carenest-ai</artifactId>
+        </dependency>
+
+        <!--单测：JUnit5 + Mockito + AssertJ，覆盖 Tool 脱敏与数据权限-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 

@@ -120,4 +120,12 @@ public class HealthAssessment extends BaseEntity
     @ApiModelProperty("健康系统分值")
     private String systemScore;
 
+    /** AI分析状态(0:分析中，1:成功，2:失败) */
+    @ApiModelProperty("AI分析状态(0:分析中，1:成功，2:失败)")
+    private Integer analysisStatus;
+
+    /** AI分析失败原因 */
+    @ApiModelProperty("AI分析失败原因")
+    private String analysisError;
+
 }

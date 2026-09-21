@@ -46,9 +46,20 @@
           <span>{{ parseTime(scope.row.assessmentTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="分析状态" align="center" prop="analysisStatus" width="110">
+        <template #default="scope">
+          <el-tag v-if="scope.row.analysisStatus === 0" type="warning">分析中</el-tag>
+          <el-tag v-else-if="scope.row.analysisStatus === 1" type="success">已完成</el-tag>
+          <el-tooltip v-else-if="scope.row.analysisStatus === 2" :content="scope.row.analysisError || 'AI 分析失败'" placement="top">
+            <el-tag type="danger">失败</el-tag>
+          </el-tooltip>
+          <span v-else>—</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="180">
         <template #default="scope">
           <el-button link type="primary" icon="ZoomIn" @click="handleUpdate(scope.row)">查看</el-button>
+          <el-button link type="primary" icon="Document" :disabled="scope.row.analysisStatus !== 1" @click="handleDetails(scope.row)">评估详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -187,6 +198,10 @@ function getList() {
     healthAssessmentList.value = response.rows;
     total.value = response.total;
     loading.value = false;
+    // 列表存在“分析中”记录时自动轮询，直到全部完成
+    if (healthAssessmentList.value.some((row) => row.analysisStatus === 0)) {
+      startPolling();
+    }
   });
 }
 
@@ -273,17 +288,58 @@ function submitForm() {
   formRef.value.validate(async (valid) => {
     if (!valid) return;
     updateLoading.value = true;
-    const res = await addHealthAssessment(form.value);
-    if (res.code === 200) {
-      proxy.$modal.msgSuccess(`操作成功`);
-      cancel();
-      proxy.$router.push({
-        path: '/enterQuit/healthDetails',
-        query: { id: res.data },
-      });
+    try {
+      const res = await addHealthAssessment(form.value);
+      if (res.code === 200) {
+        // 后端已改为异步：此刻仅“已受理、分析中”，不再直接跳详情（数据尚未就绪）
+        proxy.$modal.msgSuccess('已提交，AI 正在分析中，完成后请在列表查看');
+        cancel();
+        getList();
+      }
+    } finally {
+      updateLoading.value = false;
     }
   });
 }
+
+/** 查看评估详情（仅分析完成后可点） */
+function handleDetails(row) {
+  proxy.$router.push({
+    path: '/enterQuit/healthDetails',
+    query: { id: row.id },
+  });
+}
+
+// ---------- 分析中轮询 ----------
+let pollTimer = null;
+
+/** 静默轮询刷新列表，直到没有“分析中”记录或超时（最多约 3 分钟） */
+function startPolling() {
+  stopPolling();
+  let count = 0;
+  pollTimer = setInterval(async () => {
+    count++;
+    if (count > 60) {
+      stopPolling();
+      return;
+    }
+    const res = await listHealthAssessment(queryParams.value);
+    healthAssessmentList.value = res.rows;
+    total.value = res.total;
+    if (!res.rows.some((row) => row.analysisStatus === 0)) {
+      stopPolling();
+    }
+  }, 3000);
+}
+
+function stopPolling() {
+  if (pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+}
+
+onUnmounted(stopPolling);
 
 getList();
 </script>

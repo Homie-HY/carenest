@@ -1093,6 +1093,59 @@ LOCK TABLES `sys_user_role` WRITE;
 INSERT INTO `sys_user_role` VALUES (1,1),(2,2),(101,100),(102,100),(103,101),(104,103),(105,100);
 /*!40000 ALTER TABLE `sys_user_role` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `ai_chat_log`
+--
+
+DROP TABLE IF EXISTS `ai_chat_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ai_chat_log` (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `session_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '会话id',
+  `user_id` bigint DEFAULT NULL COMMENT '提问用户id',
+  `dept_id` bigint DEFAULT NULL COMMENT '提问用户部门id',
+  `user_role` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '提问用户角色标识，多个用逗号分隔',
+  `model` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '模型id',
+  `user_input` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '用户输入',
+  `model_output` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '模型输出',
+  `tool_calls` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '工具调用链，JSON数组',
+  `input_tokens` int DEFAULT NULL COMMENT '输入token数',
+  `output_tokens` int DEFAULT NULL COMMENT '输出token数',
+  `total_tokens` int DEFAULT NULL COMMENT '总token数',
+  `cost_ms` bigint DEFAULT NULL COMMENT '本轮耗时（毫秒）',
+  `success` tinyint DEFAULT NULL COMMENT '是否成功（0失败 1成功）',
+  `error_msg` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '失败原因摘要',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `idx_session` (`session_id`) USING BTREE,
+  KEY `idx_user` (`user_id`) USING BTREE,
+  KEY `idx_create_time` (`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci ROW_FORMAT=DYNAMIC COMMENT='AI对话审计日志';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ai_chat_log`
+--
+
+LOCK TABLES `ai_chat_log` WRITE;
+/*!40000 ALTER TABLE `ai_chat_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ai_chat_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- 护理助手菜单与权限（挂在“服务管理”menu_id=2000 下，perms 与 AssistantController @PreAuthorize 对应）
+--
+INSERT INTO `sys_menu`
+  (`menu_id`, `menu_name`, `parent_id`, `order_num`, `path`, `component`, `query`, `route_name`,
+   `is_frame`, `is_cache`, `menu_type`, `visible`, `status`, `perms`, `icon`,
+   `create_by`, `create_time`, `update_by`, `update_time`, `remark`)
+SELECT 2053, '护理助手', 2000, 5, 'assistant', 'nursing/assistant/index', NULL, '',
+       1, 0, 'C', '0', '0', 'nursing:assistant:chat', 'message',
+       'admin', NOW(), '', NULL, '对话式护理助手菜单'
+WHERE NOT EXISTS (SELECT 1 FROM `sys_menu` WHERE `perms` = 'nursing:assistant:chat');
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

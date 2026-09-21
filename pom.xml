@@ -43,6 +43,8 @@
         <kotlin.version>1.9.23</kotlin.version>
         <jackson.version>2.16.1</jackson.version>
         <okhttp.version>4.12.0</okhttp.version>
+        <!-- LangChain4j 锁定 0.35.0：这是最后一个 maven.compiler.target=8 的版本，0.36.0 起要求 JDK 17 -->
+        <langchain4j.version>0.35.0</langchain4j.version>
     </properties>
 
     <!-- 依赖声明 -->
@@ -240,6 +242,13 @@
                 <version>${carenest.version}</version>
             </dependency>
 
+            <!--AI模块-->
+            <dependency>
+                <groupId>com.carenest</groupId>
+                <artifactId>carenest-ai</artifactId>
+                <version>${carenest.version}</version>
+            </dependency>
+
             <!--Lombok-->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -351,6 +360,38 @@
                 <version>${okhttp.version}</version>
             </dependency>
 
+            <!--
+              okhttp 同族构件必须跟着 okhttp 一起抬到 4.12.0。
+              spring-boot-dependencies 2.5.15 的 BOM 把 com.squareup.okhttp3:* 管在 3.14.9，
+              只显式覆盖 okhttp 会让 okhttp-sse / logging-interceptor 漏到 3.14.9，
+              而 openai4j（流式 SSE）与 openai-java-client-okhttp 都是按 okhttp 4.x 编译的。
+            -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp-sse</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>logging-interceptor</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <!-- LangChain4j 核心 -->
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+
+            <!-- LangChain4j OpenAI 兼容协议实现（DeepSeek 走此协议） -->
+            <dependency>
+                <groupId>dev.langchain4j</groupId>
+                <artifactId>langchain4j-open-ai</artifactId>
+                <version>${langchain4j.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -363,6 +404,7 @@
         <module>carenest-common</module>
         <module>carenest-nursing-platform</module>
         <module>carenest-oss</module>
+        <module>carenest-ai</module>
     </modules>
     <packaging>pom</packaging>
 

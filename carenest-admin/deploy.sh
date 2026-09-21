@@ -32,6 +32,8 @@ if [ $container_name = "carenest-admin" ]; then
       -e OSS_ACCESS_KEY_ID="$OSS_ACCESS_KEY_ID" \
       -e OSS_ACCESS_KEY_SECRET="$OSS_ACCESS_KEY_SECRET" \
       -e LLM_XIAOMI_API_KEY="$LLM_XIAOMI_API_KEY" \
+      -e LLM_DEEPSEEK_API_KEY="$LLM_DEEPSEEK_API_KEY" \
+      -e LLM_DEEPSEEK_MODEL="${LLM_DEEPSEEK_MODEL:-deepseek-chat}" \
       -e WECHAT_APP_SECRET="$WECHAT_APP_SECRET" \
       $image_name:$image_tag
 fi
