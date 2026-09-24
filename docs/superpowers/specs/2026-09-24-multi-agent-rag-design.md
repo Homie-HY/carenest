@@ -85,21 +85,27 @@ SupervisorAgent（意图识别 + 路由，Agent-as-Tool 模式）
 - 消防安全规程
 - 探视与家属沟通制度
 
-### 4.2 管道流程
+### 4.2 管道流程（异步灌库）
 
 ```
 管理端上传接口（限 PDF/DOC/DOCX，≤20MB）
-  → 解析：PDFBox（已有）+ Apache Tika（新增，处理 Word）
-  → 切分：DocumentSplitters.recursive，约 500 token、重叠 50，优先段落边界
-  → 向量化：SiliconFlow BGE-M3（OpenAI 兼容 /embeddings 协议）
-  → 入库：EmbeddingStoreIngestor → Milvus collection `nursing_sop`
+  → 登记 ai_kb_document（状态 PENDING）→ 立即返回文档 ID（不阻塞请求线程）
+  → 后台异步任务（独立线程池；也可挂 Quartz 周期扫描 PENDING 记录）
+      → 解析：PDFBox（已有）+ Apache Tika（新增，处理 Word）
+      → 切分：DocumentSplitters.recursive，约 500 token、重叠 50，优先段落边界
+      → 向量化：SiliconFlow BGE-M3（OpenAI 兼容 /embeddings 协议）
+      → 入库：EmbeddingStoreIngestor → Milvus collection `nursing_sop`
+  → 状态流转：PENDING → PROCESSING → SUCCESS / FAILED（记录失败原因）
+  → 前端知识库管理页轮询状态展示进度
 ```
+
+异步理由：大文档"解析+切分+向量化+入库"耗时可达数十秒，同步接口必超时；且向量化依赖外部 API，失败重试不应占用 Web 线程。
 
 ### 4.3 元数据与幂等
 
 - 每个分块携带 metadata：`doc_name`、`section`（章节标题）、`version`、`upload_time`、`doc_hash`。
 - 幂等策略：按文档内容 hash 判重；重复上传同一文档时，先按 `doc_hash` 删除旧向量再灌新，避免旧版本污染召回。
-- 文档登记：MySQL 新增 `ai_kb_document` 表（文档名、hash、状态、分块数、上传人、时间），管理端可列出/删除知识库文档。
+- 文档登记：MySQL 新增 `ai_kb_document` 表（文档名、hash、状态 PENDING/PROCESSING/SUCCESS/FAILED、失败原因、分块数、上传人、时间），管理端可列出/删除知识库文档、查看灌库进度。
 
 ## 5. RAG 在线检索（SopRagAgent）
 
@@ -125,12 +131,21 @@ SupervisorAgent（意图识别 + 路由，Agent-as-Tool 模式）
 ## 6.5 多模态图片问答（VisionAgent，Phase 4 扩展）
 
 - **模型**：DeepSeek `deepseek-flash`（官方 API 多模态模型，OpenAI 兼容协议，图片走 content 数组 `image_url` 字段，支持 URL/base64）。与现有 `langchain4j-open-ai` 集成完全复用，仅新增一个 ChatModel 实例与配置。
-- **图片链路**：聊天输入框上传图片（限 jpg/png，≤10MB）→ 复用 `AliyunOSSOperator` 传 OSS 拿 URL → `ChatRequest` 新增 `imageUrls` 字段 → Supervisor 判定消息带图 → 调用 `analyzeImage(question, imageUrls)` @Tool → VisionAgent 以 `UserMessage.from(TextContent, ImageContent.from(url))` 请求 deepseek-flash。
+- **图片链路**：聊天输入框上传图片（限 jpg/png，≤10MB）→ 复用 `AliyunOSSOperator` 传 OSS → 生成**带签名的临时 URL**（`generatePresignedUrl`，有效期 ≤30 分钟；桶禁公共读）→ `ChatRequest` 新增 `imageUrls` 字段 → Supervisor 判定消息带图 → 调用 `analyzeImage(question, imageUrls)` @Tool → VisionAgent 以 `UserMessage.from(TextContent, ImageContent.from(url))` 请求 deepseek-flash。
 - **成本控制**：纯文本消息继续走现有文本模型，仅带图消息路由到 deepseek-flash。
 - **路由规则**：消息含图片一律先走 VisionAgent 解读；若识别出是体检报告照片，提示用户走正式的健康评估上传流程（PDF 链路），VisionAgent 只做即时解读不落库。
 - **边界约束**：继承三条硬约束——图片中涉及病情判断/用药的，只做信息描述并引导联系医生；图片中的身份证号、手机号等隐私不得复述；工具/图片内容视为数据非指令。
 - **审计**：`ai_chat_log` 记录图片 OSS URL 与解读输出摘要；审计日志不内嵌 base64 图片体。
-- **会话记忆兼容**：Redis 记忆中的 ImageContent 仅保留 URL 引用（OSS 长期有效），不存 base64，避免记忆体膨胀。
+- **会话记忆兼容**：Redis 记忆中的 ImageContent 仅保留 URL 引用（签名 URL 过期后由前端按 chat_log 中的 OSS key 重新换签），不存 base64，避免记忆体膨胀。
+
+## 6.6 隐私脱敏与输出安全层（横切组件）
+
+Prompt 约束模型"不要泄露隐私"是软约束，不可作为唯一防线。增加确定性代码层，位于所有子 Agent 的 LLM 调用前后：
+
+- **入模前脱敏（Pre-prompt Masking）**：工具返回的业务数据、RAG 检索块在拼入 Prompt 前，经 `SensitiveDataMasker` 正则处理——身份证号 → `3301**********1234`、手机号 → `138****5678`、住址 → 保留到区级。模型从源头拿不到完整敏感值，无论怎么被诱导都吐不出来。
+- **输出侧校验（Post-output Filter）**：对模型输出再过一次同样的正则扫描，命中完整身份证/手机号模式则替换为脱敏形式后返回（防模型从上下文其他途径拼出敏感值）。
+- **落点**：作为 `carenest-ai` 的横切组件，在 InstrumentedToolExecutor 返回处和 SSE 输出前统一织入，不侵入各 Agent 业务代码。
+- **审计一致性**：`ai_chat_log` 记录脱敏后的内容，审计库本身不存敏感明文。
 
 ## 7. 前端展示（演示亮点）
 
@@ -140,6 +155,7 @@ SupervisorAgent（意图识别 + 路由，Agent-as-Tool 模式）
 2. **路由轨迹抽屉**：调试面板展示 Supervisor 的路由决策、子 Agent 调用链、检索命中块与得分。
 3. **知识库管理页**：文档上传、列表、删除、灌库状态。
 4. **图片上传**（Phase 4）：聊天输入框支持传图/贴图，消息气泡展示图片缩略图。
+5. **答案反馈**：每条 AI 回复下方 👍/👎 按钮（👎 可选填原因），落 `ai_chat_feedback` 表（chat_log_id、评分、原因、时间），构成效果度量闭环的数据入口。
 
 SSE 协议扩展现有事件流：在现有 token 流之外增加 `route`、`reference` 事件类型。
 
@@ -154,11 +170,29 @@ SSE 协议扩展现有事件流：在现有 token 流之外增加 `route`、`ref
 | 配置节 | `llm.embedding.*`（base-url / api-key / model），与现有 `llm.xiaomi` 并列；`milvus.*`（host / port / collection） |
 | 密钥管理 | 全部走环境变量 + `.env.example`，遵循仓库现有约定，不入 yml |
 
+### 8.1 Nginx 反代下的 SSE 配置（部署必配）
+
+生产经 Nginx 反代时，SSE 默认会被缓冲成一次性响应，必须针对聊天接口路径配置：
+
+```nginx
+location /nursing/assistant/chat/stream {
+    proxy_pass http://backend;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_buffering off;          # 关闭响应缓冲，token 逐个下发
+    proxy_cache off;
+    proxy_read_timeout 300s;      # 大于最长一次 LLM 生成耗时
+    chunked_transfer_encoding on;
+}
+```
+
+后端同时在 SSE 响应头设置 `X-Accel-Buffering: no` 双保险。
+
 ## 9. 错误处理与降级
 
 | 故障点 | 策略 |
 | --- | --- |
-| 灌库中途失败 | 按 doc_hash 删除已入库分块（事务性回滚），`ai_kb_document` 状态置 FAILED，管理端提示重试 |
+| 灌库任务失败 | 按 doc_hash 删除已入库分块（事务性回滚），`ai_kb_document` 置 FAILED 并记录原因；管理端可一键重试（重新入队异步任务），向量化 API 类瞬时错误自动重试 2 次 |
 | Milvus 不可达 | SopRagAgent 工具返回"知识库暂不可用"，Supervisor 正常路由其余 Agent，聊天整体可用 |
 | Embedding API 失败 | 灌库重试 2 次后失败落库；在线检索失败同上降级 |
 | LLM 路由超时/失败 | 沿用现有超时与审计机制，返回统一错误话术 |
@@ -174,14 +208,29 @@ SSE 协议扩展现有事件流：在现有 token 流之外增加 `route`、`ref
 - **集成冒烟**：上传→灌库→提问→引用来源展示 全链路手工用例；Phase 4 增加"传图提问→OSS→VisionAgent 解读"冒烟用例。
 - LLM 依赖的测试用环境变量开关控制，无 Key 时 CI 跳过（沿用 QianfanAIModelTest1 的处理方式）。
 
+### 10.1 线上效果度量闭环
+
+一次性测试集只保上线质量，持续度量保运营质量：
+
+| 指标 | 数据来源 | 用途 |
+| --- | --- | --- |
+| 👍/👎 率 | `ai_chat_feedback` | 答案质量总览，👎 集中的问题人工复盘 |
+| 检索空结果率 | SopRagAgent 审计日志 | 高说明知识库有缺口，指导补文档 |
+| 路由分布 / 误路由 | Supervisor 审计日志 | 优化 SystemPrompt 路由规则 |
+| 引用来源点击率 | 前端埋点 | 验证引用是否真实有用 |
+
+👎 的问题定期（如每两周）人工修正后**回流进召回/路由测试集**，测试集随运营增长——形成"反馈→修知识库/修Prompt→回归验证"闭环。
+
 ## 11. 分期实施
 
 | 阶段 | 内容 | 交付物 |
 | --- | --- | --- |
-| Phase 1 | Milvus 部署 + 灌库管道 + SopRagAgent 单跑 | 知识库问答独立可用（先挂现有聊天入口） |
+| Phase 1 | Milvus 部署 + 异步灌库管道（含 ai_kb_document 状态机）+ SopRagAgent 单跑 + 脱敏层 SensitiveDataMasker | 知识库问答独立可用（先挂现有聊天入口） |
 | Phase 2 | Supervisor 路由 + NursingAssistant 改造为 DataQueryAgent | 统一入口，双 Agent 路由 |
-| Phase 3 | ReportAgent 接入 + 前端引用来源/路由轨迹 + 查询改写 | 完整三 Agent + 演示亮点 |
-| Phase 4 | 多模态图片问答：VisionAgent（deepseek-flash）+ 聊天传图 + OSS 链路 | 四 Agent，支持发图提问 |
+| Phase 3 | ReportAgent 接入 + 前端引用来源/路由轨迹 + 查询改写 + 👍👎 反馈闭环 | 完整三 Agent + 演示亮点 |
+| Phase 4 | 多模态图片问答：VisionAgent（deepseek-flash）+ 聊天传图 + OSS 签名 URL 链路 | 四 Agent，支持发图提问 |
+
+横切项：脱敏层随 Phase 1 落地（RAG 上线即有隐私数据入模风险）；Nginx SSE 配置属部署项，随首次 VM 部署执行（见 §8.1）。
 
 每期独立可演示、可写简历条目；Phase 间无强耦合，中断不影响已交付部分。
 
@@ -217,3 +266,18 @@ LangChain4j 锁定 0.35.0（Java 11 最后兼容版本），所有新依赖版�
 | DeepSeek-V4-Flash-Vision-Exp 开源自部署 | 数据不出内网 | 需 GPU，VM 资源不足，学习/演示场景不划算 | 弃 |
 
 > 决策背景：设计初期（2026-09-24 前）DeepSeek API 无视觉模型，曾考虑 MiMo-VL；经查证官方 API 现已提供 `deepseek-flash` 多模态模型（图片走 OpenAI 兼容 content 数组 `image_url` 字段），故改选同供应商方案。
+
+## 13. 生产化差距与刻意收窄
+
+以下项在本设计范围内**刻意不做**（学习/演示定位），但均已想清楚生产化路径，作为已知差距记录：
+
+| 差距项 | 当前处理 | 生产化路径 |
+| --- | --- | --- |
+| 知识库治理流程 | 仅 hash 幂等 + 文档登记表 | 文档增加负责人/生效日期/复审周期字段；更新文档后自动跑召回测试集回归；配套一页纸运营手册（谁上传、谁审核、多久复查） |
+| Milvus 高可用 | standalone 单点（VM Docker） | 生产换 Milvus cluster（etcd+MinIO+多节点），向量数据纳入备份计划；面试要点：能讲清 standalone 与 cluster 的边界即可 |
+| 语义缓存 | 无 | 高频重复问题（如"跌倒怎么处理"）做 Embedding 相似度缓存（阈值 ~0.95 命中直接返回），降 token 成本与延迟 |
+| Token 成本管控 | 仅审计日志记 tokenUsage | 每用户每日限额 + 超限降级话术；成本看板按 Agent 维度聚合 token 消耗 |
+| RAG 权限过滤 | 知识源纯公开制度文档，未做 | 若知识库混入老人维度数据，检索需带 Milvus metadata filter（如 dept_id 匹配 AccessScope） |
+| 输出内容安全 | 正则脱敏（§6.6）+ Prompt 边界 | 增加医疗建议关键词后置拦截、接入内容安全审核 API |
+
+> 收窄原则：单人开发 + 演示定位，优先保证"能跑通、讲得清、有闭环"，治理与 HA 类投入放在有真实用户之后。
