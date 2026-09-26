@@ -1,4 +1,4 @@
-# carenest 智慧养老护理管理系统
+# CareNest 智慧养老护理管理系统
 
 基于 [RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue) v3.8.9 前后端分离框架二次开发的养老机构管理系统。后端为 Maven 多模块工程，前端为 Vue3 管理端（`carenest-ui`），覆盖老人档案、入住合同、床位、护理、健康评估、报警等养老业务全链路，并在健康评估环节接入大模型对体检报告做智能分析。
 
