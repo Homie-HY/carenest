@@ -12,7 +12,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 老人家属对象 family_member
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-06-08
  */
 @Data

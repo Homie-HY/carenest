@@ -12,7 +12,7 @@ import dev.langchain4j.memory.chat.MessageWindowChatMemory;
  * 带上 userId 是为了让 Redis key 天然按用户隔离，
  * 即使前端伪造了别人的 sessionId 也读不到对方的上下文。
  *
- * @author qoder
+ * @author Homie
  */
 public class ChatMemoryFactory implements ChatMemoryProvider {
 

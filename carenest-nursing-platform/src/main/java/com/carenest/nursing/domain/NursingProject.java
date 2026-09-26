@@ -12,7 +12,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 护理项目对象 nursing_project
  * 
- * @author alexis
+ * @author Homie
  * @date 2025-06-02
  */
 @Data

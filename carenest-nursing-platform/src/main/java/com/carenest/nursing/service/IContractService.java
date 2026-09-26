@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
  * 合同Service接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 public interface IContractService extends IService<Contract>

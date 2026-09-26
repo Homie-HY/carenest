@@ -27,7 +27,7 @@ import java.time.Duration;
  * 连带把现有的小米 MiMo 健康评估链路一起拖垮。因此这里用占位值保证 Bean 能建出来，
  * 由 {@code AssistantService} 在真正调用前用 {@link DeepSeekProperties#isAvailable()} 拦截。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 @Configuration

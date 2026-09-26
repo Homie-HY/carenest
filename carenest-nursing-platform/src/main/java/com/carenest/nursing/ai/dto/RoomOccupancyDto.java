@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 房间入住情况汇总。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class RoomOccupancyDto {

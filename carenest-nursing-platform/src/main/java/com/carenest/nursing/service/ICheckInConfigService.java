@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
  * 入住配置Service接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 public interface ICheckInConfigService extends IService<CheckInConfig>

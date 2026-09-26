@@ -16,7 +16,7 @@ import java.util.Set;
  * {@code nursing_elder(nursing_id, elder_id)}。因此非管理员的可见范围按
  * “{@code nursing_elder.nursing_id = userId}” 收敛；{@code deptId} 仅用于审计留痕。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class AccessScope {

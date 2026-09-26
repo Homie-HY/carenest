@@ -13,7 +13,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 合同对象 contract
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 @Data

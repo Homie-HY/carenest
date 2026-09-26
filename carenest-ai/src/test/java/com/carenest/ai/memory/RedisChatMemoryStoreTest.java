@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * 用 Mockito 打桩 {@link StringRedisTemplate}，不依赖真实 Redis，聚焦四件事：
  * 存（带 TTL）、取（正常反序列化）、删、以及 Redis 异常 / 脏数据时的降级行为。
  *
- * @author qoder
+ * @author Homie
  */
 class RedisChatMemoryStoreTest {
 

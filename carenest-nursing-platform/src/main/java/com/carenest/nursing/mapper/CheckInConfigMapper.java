@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 入住配置Mapper接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 @Mapper

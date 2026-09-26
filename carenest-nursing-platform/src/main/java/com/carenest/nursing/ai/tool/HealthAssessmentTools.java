@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * <b>数据权限</b>：health_assessment 无护理员外键，只能按老人姓名回连 elder 做归属校验；
  * 非管理员查某位老人评估前，先确认该老人在其负责范围内。风险等级分布属于全院聚合视图，仅管理员可用。
  *
- * @author qoder
+ * @author Homie
  */
 public class HealthAssessmentTools {
 

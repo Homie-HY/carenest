@@ -67,7 +67,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *   <li><b>密钥未配置时优雅降级</b>：不抛底层异常，返回明确提示，且不影响现有 MiMo 健康评估链路。</li>
  * </ul>
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 @Service

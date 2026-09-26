@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * 注意：DeepSeek 走 OpenAI 兼容协议，base-url 只到域名，不带 {@code /v1}，
  * 由 langchain4j-open-ai 自行拼接 {@code /chat/completions}。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 @ConfigurationProperties(prefix = "llm.deepseek")

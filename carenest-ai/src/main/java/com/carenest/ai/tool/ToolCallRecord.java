@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * 单次工具调用的轨迹记录，用于审计留痕与前端"正在查询..."提示。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class ToolCallRecord implements Serializable {

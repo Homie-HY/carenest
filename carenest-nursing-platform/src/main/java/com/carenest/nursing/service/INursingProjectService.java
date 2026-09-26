@@ -8,7 +8,7 @@ import com.carenest.nursing.vo.NursingProjectVo;
 /**
  * 护理项目Service接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2025-06-02
  */
 public interface INursingProjectService extends IService<NursingProject>

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * 健康评估Mapper接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-30
  */
 @Mapper

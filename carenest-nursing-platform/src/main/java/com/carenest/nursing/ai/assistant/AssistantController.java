@@ -32,7 +32,7 @@ import java.util.List;
  * 阶段 2 只提供<b>非流式</b>对话与会话管理；流式 SSE 接口在阶段 3 补充。
  * 所有接口都要求 {@code nursing:assistant:chat} 权限，数据权限在服务层按登录人收敛。
  *
- * @author qoder
+ * @author Homie
  */
 @Api("护理助手")
 @Slf4j

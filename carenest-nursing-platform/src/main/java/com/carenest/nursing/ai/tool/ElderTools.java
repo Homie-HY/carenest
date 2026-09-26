@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * <p>
  * <b>脱敏</b>：只返回 {@link ElderBriefDto}，绝不返回 {@link Elder} 实体（含身份证、手机号、住址、证件照）。
  *
- * @author qoder
+ * @author Homie
  */
 public class ElderTools {
 

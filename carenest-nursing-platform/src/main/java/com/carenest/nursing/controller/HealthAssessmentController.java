@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 /**
  * 健康评估Controller
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-30
  */
 @Slf4j

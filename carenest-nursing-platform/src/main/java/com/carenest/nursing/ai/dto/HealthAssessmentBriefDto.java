@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
  * 也不含 {@code birthDate}（出生日期）——只暴露换算后的 {@code age}。
  * 不得把 {@link HealthAssessment} 实体直接返回给模型。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class HealthAssessmentBriefDto {

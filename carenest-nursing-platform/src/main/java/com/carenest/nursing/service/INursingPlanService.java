@@ -9,7 +9,7 @@ import com.carenest.nursing.vo.NursingPlanVo;
 /**
  * 护理计划Service接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2025-06-02
  */
 public interface INursingPlanService extends IService<NursingPlan>

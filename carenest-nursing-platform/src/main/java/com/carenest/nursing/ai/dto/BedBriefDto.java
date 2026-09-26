@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 床位精简信息。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class BedBriefDto {

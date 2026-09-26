@@ -21,7 +21,7 @@ import java.util.List;
  * 后者的 value 序列化器是 FastJson2JsonRedisSerializer，会把已经是 JSON 的消息串再包一层引号，
  * 读写虽然对称但排查问题时 redis-cli 里看到的不是原始 JSON。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 public class RedisChatMemoryStore implements ChatMemoryStore {

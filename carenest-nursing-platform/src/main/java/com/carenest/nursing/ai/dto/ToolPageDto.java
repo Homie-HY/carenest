@@ -11,7 +11,7 @@ import java.util.List;
  * “共 N 条，已显示前 M 条”提示，既控制 token 消耗，也让模型能如实告知用户结果被截断。
  *
  * @param <T> 列表元素类型，必须是脱敏 DTO
- * @author qoder
+ * @author Homie
  */
 @Data
 public class ToolPageDto<T> {

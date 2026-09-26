@@ -19,7 +19,7 @@ import java.util.Map;
  * <p>
  * Hash 的 key 里带 userId，天然做到跨用户不可见。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 public class ChatSessionRegistry {

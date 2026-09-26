@@ -13,7 +13,7 @@ import java.util.List;
  * <p>
  * <b>Token 控制</b>：所有列表工具强制走 {@link #page}，单次最多返回 {@link #MAX_ITEMS} 条。
  *
- * @author qoder
+ * @author Homie
  */
 public final class ToolResults {
 

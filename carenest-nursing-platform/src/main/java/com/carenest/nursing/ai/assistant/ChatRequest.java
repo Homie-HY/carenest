@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 护理助手对话请求体。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 @ApiModel("护理助手对话请求")

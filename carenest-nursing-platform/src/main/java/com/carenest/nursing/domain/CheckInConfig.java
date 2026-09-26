@@ -14,7 +14,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 入住配置对象 check_in_config
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 @Data

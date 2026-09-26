@@ -10,7 +10,7 @@ import lombok.Data;
  * 严禁加入 {@code idCardNo}、{@code phone}、{@code address}、{@code idCardPortraitImg}、
  * {@code idCardNationalEmblemImg}、{@code birthday}。任何工具都不得把 {@link Elder} 实体直接返回给模型。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class ElderBriefDto {

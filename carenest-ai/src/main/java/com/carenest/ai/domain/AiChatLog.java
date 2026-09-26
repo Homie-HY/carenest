@@ -17,7 +17,7 @@ import java.util.Date;
  * 养老护理属于医疗相关场景，对话内容涉及老人健康信息，必须可追溯：
  * 谁在什么时候问了什么、助手基于哪些数据回答、消耗了多少 token。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 @TableName("ai_chat_log")

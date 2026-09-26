@@ -14,7 +14,7 @@ import java.io.InputStream;
 public class QianfanAIModelTest1 {
     public static void main(String[] args) throws FileNotFoundException {
 
-        InputStream fis = new FileInputStream("src/test/resources/health-report-sample.pdf");
+        InputStream fis = new FileInputStream(System.getProperty("test.report.pdf", "src/test/resources/health-report-sample.pdf"));
         String content = PDFUtil.pdfToString(fis);
 
         String prompt = "请以一个专业医生的视角来分析这份体检报告，报告中包含了一些异常数据，我需要您对这些数据进行解读，并给出相应的健康建议。\n" +

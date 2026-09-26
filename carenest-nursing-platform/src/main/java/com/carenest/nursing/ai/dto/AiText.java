@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  * 还容易被误解。这里统一转成中文文案，顺带把出生日期换算成年龄——
  * 年龄可以暴露，出生日期本身不进 DTO。
  *
- * @author qoder
+ * @author Homie
  */
 public final class AiText {
 

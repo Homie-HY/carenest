@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
  * MyBatis-Plus 的链式 wrapper 用 {@code RETURNS_SELF} 打桩：所有流式方法返回自身，只对终止方法
  * {@code count() / list()} 精确桩定，避免逐个 overload 匹配。
  *
- * @author qoder
+ * @author Homie
  */
 class ElderToolsPermissionTest {
 

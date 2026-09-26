@@ -13,7 +13,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 入住对象 check_in
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 @Data

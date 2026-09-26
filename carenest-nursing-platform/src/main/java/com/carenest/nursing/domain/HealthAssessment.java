@@ -13,7 +13,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 健康评估对象 health_assessment
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-30
  */
 @Data

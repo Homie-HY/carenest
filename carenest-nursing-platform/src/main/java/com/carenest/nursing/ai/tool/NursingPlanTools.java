@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * 因此这里提供“计划清单 / 计划详情（含项目）/ 项目清单”三类目录查询。
  * 目录数据不含老人隐私，所有已登录护理助手用户均可查询。
  *
- * @author qoder
+ * @author Homie
  */
 public class NursingPlanTools {
 

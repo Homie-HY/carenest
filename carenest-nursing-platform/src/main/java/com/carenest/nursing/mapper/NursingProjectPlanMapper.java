@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 /**
  * 护理计划和项目关联Mapper接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2025-06-08
  */
 @Mapper

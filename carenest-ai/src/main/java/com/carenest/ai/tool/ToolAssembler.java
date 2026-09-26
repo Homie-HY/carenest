@@ -19,7 +19,7 @@ import java.util.Map;
  * 之所以不用 {@code AiServices.tools(Object...)}：那条路径不开放 ToolExecutor 注入点，
  * 拿不到工具调用的入参与返回值，审计与前端进度提示都无从做起。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 public final class ToolAssembler {

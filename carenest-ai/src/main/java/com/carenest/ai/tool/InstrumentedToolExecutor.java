@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
  * 不提供工具执行事件，而 {@code AiServices.tools(Map<ToolSpecification, ToolExecutor>)}
  * 恰好开放了这个注入点——统一在一处拦截，业务 Tool 类保持纯净。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 public class InstrumentedToolExecutor implements ToolExecutor {

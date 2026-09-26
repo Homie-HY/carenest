@@ -10,7 +10,7 @@ package com.carenest.ai.tool;
  * <p>
  * 实现类的回调运行在工具执行线程上，必须自己保证线程安全，且不得抛出异常。
  *
- * @author qoder
+ * @author Homie
  */
 public interface ToolCallListener {
 

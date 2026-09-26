@@ -19,7 +19,7 @@ import dev.langchain4j.service.UserMessage;
  * {@code @MemoryId} 传入 {@code {userId}:{sessionId}}，由 {@code ChatMemoryFactory} 落到 Redis，
  * 天然按用户隔离上下文。
  *
- * @author qoder
+ * @author Homie
  */
 public interface NursingAssistant {
 

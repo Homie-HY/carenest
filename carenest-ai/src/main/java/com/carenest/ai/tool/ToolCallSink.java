@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * 线程安全前提：同一会话的请求由 AssistantService 串行化（每会话一把锁），
  * 因此 trace 队列在一次请求内只会有一个生产者链路。
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 public class ToolCallSink implements ToolCallListener {

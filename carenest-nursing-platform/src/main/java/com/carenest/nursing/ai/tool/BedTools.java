@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * <p>
  * 床位、房间属于机构设施数据，不含老人隐私，所有已登录护理助手用户均可查询。
  *
- * @author qoder
+ * @author Homie
  */
 public class BedTools {
 

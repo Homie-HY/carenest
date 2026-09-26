@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * 护理计划精简信息。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class NursingPlanBriefDto {

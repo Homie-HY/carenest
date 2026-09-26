@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 证件照、体检报告原件等敏感字段，序列化后的 JSON 就会带上它们，本测试立即失败。
  * 断言分两层：既断言 JSON <b>不含敏感字段名</b>，也断言 <b>不含敏感字段的具体值</b>。
  *
- * @author qoder
+ * @author Homie
  */
 class DesensitizationTest {
 

@@ -25,7 +25,7 @@ import java.util.List;
  *       {@code SecurityUtils} / {@code HttpServletRequest}，所有身份信息都由调用方在请求线程上取好后传入。</li>
  * </ol>
  *
- * @author qoder
+ * @author Homie
  */
 @Slf4j
 @Component

@@ -8,7 +8,7 @@ import com.carenest.nursing.dto.CheckInApplyDto;
 /**
  * 入住Service接口
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 public interface ICheckInService extends IService<CheckIn>

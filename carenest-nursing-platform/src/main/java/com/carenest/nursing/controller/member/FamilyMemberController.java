@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 老人家属Controller
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-06-08
  */
 @Api("老人家属管理")

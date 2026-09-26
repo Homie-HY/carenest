@@ -9,7 +9,7 @@ import java.io.Serializable;
  * <p>
  * 只放展示与排序需要的字段，不放对话内容——对话内容在 {@link RedisChatMemoryStore} 里。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class ChatSessionMeta implements Serializable {

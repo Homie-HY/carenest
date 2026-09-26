@@ -11,7 +11,7 @@ import java.util.List;
  * 除最终答案外，一并返回本轮的工具调用轨迹，便于前端展示“查询了哪些数据”，
  * 也便于人工核对模型是否基于真实数据作答。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class ChatResult {

@@ -11,7 +11,7 @@ import com.carenest.common.core.domain.BaseEntity;
 /**
  * 护理计划和项目关联对象 nursing_project_plan
  * 
- * @author alexis
+ * @author Homie
  * @date 2025-06-08
  */
 @Data

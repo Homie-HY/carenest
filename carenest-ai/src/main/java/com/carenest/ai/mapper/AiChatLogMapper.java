@@ -9,7 +9,7 @@ import com.carenest.ai.domain.AiChatLog;
  * 包路径落在 {@code com.carenest.**.mapper} 下，由 carenest-framework 的
  * {@code @MapperScan("com.carenest.**.mapper")} 统一扫描，无需额外配置。
  *
- * @author qoder
+ * @author Homie
  */
 public interface AiChatLogMapper extends BaseMapper<AiChatLog> {
 }

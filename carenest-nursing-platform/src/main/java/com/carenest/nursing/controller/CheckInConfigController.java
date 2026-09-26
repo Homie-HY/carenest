@@ -29,7 +29,7 @@ import com.carenest.common.core.page.TableDataInfo;
 /**
  * 入住配置Controller
  * 
- * @author alexis
+ * @author Homie
  * @date 2026-05-07
  */
 @Api("入住配置管理")

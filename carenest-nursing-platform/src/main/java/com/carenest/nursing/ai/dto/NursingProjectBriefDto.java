@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 /**
  * 护理项目精简信息。
  *
- * @author qoder
+ * @author Homie
  */
 @Data
 public class NursingProjectBriefDto {
