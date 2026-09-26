@@ -72,7 +72,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: ${CARENEST_REDIS_PASSWORD}
+    password: ${CARENEST_REDIS_PASSWORD:}
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -93,7 +93,7 @@ spring:
       master:
         url: jdbc:mysql://192.168.100.168:3306/carenest?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
         username: root
-        password: ${CARENEST_MYSQL_PASSWORD}
+        password: ${CARENEST_MYSQL_PASSWORD:}
       # 从库数据源
       slave:
         # 从数据源开关/默认关闭
@@ -133,7 +133,7 @@ spring:
         url-pattern: /druid/*
         # 控制台管理用户名和密码
         login-username: ruoyi
-        login-password: ${CARENEST_DRUID_PASSWORD}
+        login-password: ${CARENEST_DRUID_PASSWORD:}
       filter:
         stat:
           enabled: true
@@ -149,7 +149,7 @@ token:
   # 令牌自定义标识
   header: Authorization
   # 令牌密钥
-  secret: ${CARENEST_TOKEN_SECRET}
+  secret: ${CARENEST_TOKEN_SECRET:}
   # 令牌有效期（默认30分钟）
   expireTime: 30
 

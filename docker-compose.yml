@@ -7,7 +7,7 @@ services:
     container_name: carenest-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${CARENEST_MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${CARENEST_MYSQL_PASSWORD:?请在本目录 .env 中配置 CARENEST_MYSQL_PASSWORD}
       MYSQL_DATABASE: carenest
       TZ: Asia/Shanghai
     ports:
@@ -28,7 +28,7 @@ services:
     restart: always
     ports:
       - "6379:6379"
-    command: redis-server --requirepass ${CARENEST_REDIS_PASSWORD}
+    command: redis-server --requirepass ${CARENEST_REDIS_PASSWORD:?请在本目录 .env 中配置 CARENEST_REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     networks:
@@ -49,10 +49,12 @@ services:
       # 覆盖配置文件中的 MySQL 和 Redis 地址，指向容器服务名
       SPRING_REDIS_HOST: redis
       SPRING_REDIS_PORT: 6379
-      SPRING_REDIS_PASSWORD: ${CARENEST_REDIS_PASSWORD}
+      SPRING_REDIS_PASSWORD: ${CARENEST_REDIS_PASSWORD:?}
       SPRING_DATASOURCE_DRUID_MASTER_URL: jdbc:mysql://mysql:3306/carenest?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=GMT%2B8
       SPRING_DATASOURCE_DRUID_MASTER_USERNAME: root
-      SPRING_DATASOURCE_DRUID_MASTER_PASSWORD: ${CARENEST_MYSQL_PASSWORD}
+      SPRING_DATASOURCE_DRUID_MASTER_PASSWORD: ${CARENEST_MYSQL_PASSWORD:?}
+      # 令牌签名密钥，未配置时登录功能不可用
+      CARENEST_TOKEN_SECRET: ${CARENEST_TOKEN_SECRET:?请在本目录 .env 中配置 CARENEST_TOKEN_SECRET}
       # 以下敏感信息从同目录 .env 文件读取，不写入仓库（参见 .env.example）
       OSS_ACCESS_KEY_ID: ${OSS_ACCESS_KEY_ID:?请在本目录 .env 中配置 OSS_ACCESS_KEY_ID}
       OSS_ACCESS_KEY_SECRET: ${OSS_ACCESS_KEY_SECRET:?请在本目录 .env 中配置 OSS_ACCESS_KEY_SECRET}
