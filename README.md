@@ -92,6 +92,10 @@ Copy-Item .env.example .env
 
 | 变量 | 用途 | 消费方 |
 | --- | --- | --- |
+| `CARENEST_MYSQL_PASSWORD` | MySQL 连接口令 | `application-{dev,test,prod}.yml` 的 `spring.datasource.druid.master.password`；compose 中同时用于初始化 MySQL root 口令 |
+| `CARENEST_REDIS_PASSWORD` | Redis 连接口令 | `spring.redis.password`；compose 中同时用于 Redis `--requirepass` |
+| `CARENEST_TOKEN_SECRET` | JWT 令牌签名密钥 | `token.secret`（未配置则登录功能不可用） |
+| `CARENEST_DRUID_PASSWORD` | Druid 监控台登录口令（可选） | `statViewServlet.login-password` |
 | `OSS_ACCESS_KEY_ID` / `OSS_ACCESS_KEY_SECRET` | 阿里云 OSS 文件上传 | `AliyunOSSOperator`（`EnvironmentVariableCredentialsProvider`） |
 | `LLM_XIAOMI_API_KEY` | 小米 MiMo 大模型 | `llm.xiaomi.api-key` |
 | `WECHAT_APP_SECRET` | 微信小程序家属端登录 | `wechat.appSecret` |
@@ -110,8 +114,8 @@ Copy-Item .env.example .env
 **后端**
 
 1. 创建 MySQL 数据库，依次导入 `sql/ry_20250417.sql`、`sql/quartz.sql`、`sql/carenest-dev06-init.sql`。
-2. 修改 `carenest-admin/src/main/resources/application-druid.yml` 中的数据库连接，并确保本地 Redis 已启动。
-3. 复制 `.env.example` 为 `.env` 并填入 OSS、MiMo、微信等密钥，再按上节说明注入到运行环境。
+2. 确保 MySQL / Redis 已启动；连接地址与口令在 `application-dev.yml` 中配置，口令一律走 `CARENEST_*` 环境变量，仓库内不含真实密码。
+3. 复制 `.env.example` 为 `.env` 并填入数据库、Redis、令牌及 OSS、MiMo、微信等密钥，再按上节说明注入到运行环境。
 4. 运行启动类 `com.carenest.RuoYiApplication`，默认端口见 `application.yml`（激活 profile 为 `dev`）。
 
 **前端**
@@ -130,8 +134,10 @@ npm run dev
 
 ## 分支与提交规范
 
-- 远程仓库仅保留 `master` 单一分支，所有开发与推送均在 master 上进行。
-- 提交信息统一格式：`存档N：关键词`（如 `存档2：前端代码初始化文件`），N 为递增存档序号。
+- 本仓库为单仓（monorepo）：后端 Maven 多模块 + Vue3 前端（`carenest-ui/`）在同一仓库，一次提交可覆盖前后端的同一功能改动。
+- 日常开发在 `master` 上进行；里程碑版本以轻量标签锚定（如 `v1.0.0`），不再使用早期"存档N"式提交节点。
+- 提交信息遵循 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/)：`type(scope): 描述`，type 取 `feat` / `fix` / `docs` / `chore` / `security` / `refactor` 等。
+- 仓库不含任何真实密钥；新增敏感配置一律使用 `${CARENEST_*}` 等环境变量占位符，禁止写回明文。
 
 ## 致谢
 
